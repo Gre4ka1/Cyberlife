@@ -36,7 +36,7 @@ public class DrawThread extends Thread{
     @Override
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
-        bots.add(new Bot(500,500,new short[]{17,18},new Color()));
+        bots.add(new Bot(500,500,new short[]{20,17,18,20},new Color()));
         bots.add(bots.get(0).dublicate());
         System.out.println(bots.get(0).getCode());
         while (running) {
@@ -45,8 +45,22 @@ public class DrawThread extends Thread{
                 for (int i = 0; i < b.getCode().length; i++) {
                     switch (b.getCode()[i]){
                         case(17): b.generate(); break;
-                        case(18): b.move(); break;
+                        case(18): b.move(canvas); break;
                         //case(19): bots.add(b.dublicate());
+                        case(20):
+                            /*System.out.println("=====================");
+                            System.out.println(b.getX()+" "+b.getY());
+                            System.out.println(b.getDx()+" "+b.getDy());
+                            System.out.println(b.getCurrent()[0]+" "+b.getCurrent()[1]);
+                            System.out.println("=====================");*/
+                            for (int h = 0; i<bots.size(); h++) {
+                                if (bots.get(h).getX()==b.getCurrent()[0] || bots.get(h).getY()==b.getCurrent()[1]){
+                                    b.eat(bots.get(h),bots);
+                                    break;
+                                }
+                            }
+
+                            break;
                         default:
                             System.out.println("BRUH "+b.getCode()[i]);
 

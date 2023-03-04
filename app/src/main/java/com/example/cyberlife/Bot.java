@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Bot{
@@ -40,23 +41,31 @@ public class Bot{
             code[i]=(short) new Random().nextInt(32);
         }
     }
+
     public void draw(Canvas canvas, Paint paint){
         canvas.drawRect(x,y, (x+50),(y+50),paint);
     }
-    public void move(){
-        System.out.println(x+" "+y);
+    public void move(Canvas canvas){
+        //System.out.println(x+" "+y);
         x=x+dx;
         y=y+dy;
-        System.out.println("d: "+dx+" "+dy);
-        System.out.println(x+" "+y);
+        if(x+50>=canvas.getWidth() || x<=0) dx=dx*-1;
+        if(y+50>=canvas.getHeight() || y<=0) dy=dy*-1;
+        //System.out.println("d: "+dx+" "+dy);
+        //System.out.println(x+" "+y);
     }
     public void generate(){
         energy+=25;
+        if (energy>100) energy=100;
     }
     public Bot dublicate(){
         return new Bot(x+dx,y+dy,code,color);
     }
-
+    public void eat(Bot enemy, ArrayList<Bot> bots){
+        bots.remove(enemy);
+        energy+=enemy.energy*0.75;
+        if (energy>100) energy=100;
+    }
     public int getDx() {
         return dx;
     }
@@ -95,6 +104,18 @@ public class Bot{
 
     public void setEnergy(short energy) {
         this.energy = energy;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public int[] getCurrent(){
+        return new int[]{x+dx, y+dy};
     }
 }
 
