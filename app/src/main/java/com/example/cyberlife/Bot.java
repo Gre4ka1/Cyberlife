@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.os.Build;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 
 public class Bot{
@@ -14,6 +15,7 @@ public class Bot{
     private short[] code;
     private Color color;
     private short energy;
+
 
     public Bot(int x, int y, short[] code, Color color) {
         this.x = x;
@@ -66,6 +68,43 @@ public class Bot{
         energy+=enemy.energy*0.75;
         if (energy>100) energy=100;
     }
+    public void rotateL(){
+        System.out.println(dx+" "+dy);
+        if (dx==50 && dy ==-50){ dx=0; dy=-50;}
+        else if (dx==0 && dy ==-50) {dx=-50; dy=-50;}
+        else if (dx==-50 && dy ==-50) {dx=-50; dy=0;}
+        else if (dx==-50 && dy ==0) {dx=-50; dy=50;}
+        else if (dx==-50 && dy ==50) {dx=0; dy=50;}
+        else if (dx==0 && dy ==50) {dx=50; dy=50;}
+        else if (dx==50 && dy ==50) {dx=50; dy=0;}
+        else if (dx==50 && dy ==0) {dx=50; dy=-50;}
+    }
+    public void rotateR(){
+        if (dx==50 && dy ==-50){ dx=50; dy=0;}
+        else if (dx==50 && dy ==0) {dx=50; dy=50;}
+        else if (dx==50 && dy ==50) {dx=0; dy=50;}
+        else if (dx==0 && dy ==50) {dx=-50; dy=50;}
+        else if (dx==-50 && dy ==50) {dx=-50; dy=0;}
+        else if (dx==-50 && dy ==0) {dx=-50; dy=-50;}
+        else if (dx==-50 && dy ==-50) {dx=0; dy=-50;}
+        else if (dx==0 && dy ==-50) {dx=50; dy=-50;}
+    }
+    public short energy(){
+        if (energy>=50) return (short) (1);
+        return (short) (2);
+    }
+    public short look( ArrayList<Bot> bots){
+        for (Bot b:bots) {
+            if(b.getX()==x+dx && b.getY()==y+dy){
+                //TODO check enemy/friend
+                return (short) (1);
+            }
+        }
+        return (short) (2);
+    }
+
+
+
     public int getDx() {
         return dx;
     }
