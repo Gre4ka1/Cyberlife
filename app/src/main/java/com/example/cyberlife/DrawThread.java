@@ -36,12 +36,13 @@ public class DrawThread extends Thread{
     @Override
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
-        bots.add(new Bot(500,500,new short[]{24,20,2},new Color()));
+        bots.add(new Bot(500,500,new short[]{24,20,19},new Color()));
         bots.add(bots.get(0).dublicate());
         System.out.println(bots.get(0).getCode());
         while (running) {
             Canvas canvas = surfaceHolder.lockCanvas();
-            for (Bot b:bots) { //TODO cdelay blyat chtob pri udalenii ne lomalsya cikl
+            for (int bb=0;bb<bots.size();bb++) { //TODO cdelay blyat chtob pri udalenii ne lomalsya cikl
+                Bot b=bots.get(bb);
                 for (short count = 0; count < b.getCode().length;) {
                     switch (b.getCode()[count]){
                         case(17): {   //                      ГЕНЕРАЦИЯ
@@ -54,7 +55,9 @@ public class DrawThread extends Thread{
                             count++;
                             break;
                         }
-                        //case(19): bots.add(b.dublicate());
+                        case(19):     //                      РАЗМНОЖЕНИЕ
+                            bots.add(b.dublicate());
+                            System.out.println(b.getDx()+" "+b.getDy());
                         case(20): {   //                      ПОЕДАНИЕ
                             /*System.out.println("=====================");
                             System.out.println(b.getX()+" "+b.getY());
@@ -88,10 +91,9 @@ public class DrawThread extends Thread{
                             break;
                         }
 
-                        case(24): {   //                      ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
+                        case(24):    //                      ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
                             count += b.look(bots);
                             break;
-                        }
 
 
                         case(2): {
