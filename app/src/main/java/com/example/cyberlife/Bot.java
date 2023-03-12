@@ -47,6 +47,22 @@ public class Bot{
     public void draw(Canvas canvas, Paint paint){
         canvas.drawRect(x,y, (x+50),(y+50),paint);
     }
+    public void drawInfo(Canvas canvas){
+        Paint text = new Paint();
+        text.setStyle(Paint.Style.FILL);
+        text.setColor(Color.BLACK);
+        text.setTextSize(16);
+        String cod;
+        for (int j = 0; j < 4; j++) {
+            cod="";
+            for (int i = j*4; i < (j+1)*4; i++) {
+                cod=cod+" "+(code[i]<10?"  "+code[i]:code[i]);
+            }
+            canvas.drawText(cod,x+25,y+25+j*20,text);
+        }
+
+    }
+
     public void move(Canvas canvas){
         //System.out.println(x+" "+y);
         x=x+dx;

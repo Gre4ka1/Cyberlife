@@ -36,79 +36,81 @@ public class DrawThread extends Thread{
     @Override
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
-        bots.add(new Bot(500,500,new short[]{24,20,19},new Color()));
-        bots.add(bots.get(0).dublicate());
+        bots.add(new Bot(500,500,new short[]{24,20,19,34,12,2,9,6,3,6,4,6,9,6,12,12},new Color()));
+        //bots.add(bots.get(0).dublicate());
         System.out.println(bots.get(0).getCode());
         while (running) {
             Canvas canvas = surfaceHolder.lockCanvas();
             for (int bb=0;bb<bots.size();bb++) { //TODO cdelay blyat chtob pri udalenii ne lomalsya cikl
                 Bot b=bots.get(bb);
                 for (short count = 0; count < b.getCode().length;) {
-                    switch (b.getCode()[count]){
-                        case(17): {   //                      ГЕНЕРАЦИЯ
-                            b.generate();
-                            count++;
-                            break;
-                        }
-                        case(18): {   //                       ДВИЖЕНИЕ
-                            b.move(canvas);
-                            count++;
-                            break;
-                        }
-                        case(19):     //                      РАЗМНОЖЕНИЕ
-                            bots.add(b.dublicate());
-                            System.out.println(b.getDx()+" "+b.getDy());
-                        case(20): {   //                      ПОЕДАНИЕ
-                            /*System.out.println("=====================");
-                            System.out.println(b.getX()+" "+b.getY());
-                            System.out.println(b.getDx()+" "+b.getDy());
-                            System.out.println(b.getCurrent()[0]+" "+b.getCurrent()[1]);
-                            System.out.println("=====================");*/
-                            for (int h = 0; h < bots.size(); h++) {
-                                if (bots.get(h).getX() == b.getCurrent()[0] || bots.get(h).getY() == b.getCurrent()[1]) {
-                                    System.out.println("SUCCESS!");
-                                    b.eat(bots.get(h), bots);
-                                    break;
-                                }
-                            }
-                            count++;
-                            break;
-                        }
-                        case(21): {  //                       ПОВОРОТ ВЛЕВО
-                            b.rotateL();
-                            count++;
-                            break;
-                        }
+                    //switch (b.getCode()[count]){
 
-                        case(22): {   //                      ПОВОРОТ ВПРАВО
-                            b.rotateR();
-                            count++;
-                            break;
-                        }
-
-                        case(23): {   //                      ПРОВЕРКА ЭНЕРГИИ
-                            count += b.energy();
-                            break;
-                        }
-
-                        case(24):    //                      ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
-                            count += b.look(bots);
-                            break;
-
-
-                        case(2): {
-                            System.out.println("никого не видно");
-
-                        }
-
-                        default: {
-                            System.out.println("BRUH " + b.getCode()[count]);
-                            count++;
-                        }
-
+                    if(b.getCode()[count]==17) {//case(17): {   //                      ГЕНЕРАЦИЯ
+                        b.generate();
+                        count++;
+                        break;
                     }
+                    else if(b.getCode()[count]==18) {//case(18): {   //                       ДВИЖЕНИЕ
+                        b.move(canvas);
+                        count++;
+                        break;
+                    }
+                    else if(b.getCode()[count]==19) {//case(19):     //                      РАЗМНОЖЕНИЕ
+                        bots.add(b.dublicate());
+                        System.out.println(b.getDx() + " " + b.getDy());
+                    }
+                    else if(b.getCode()[count]==20) {//case(20): {   //                      ПОЕДАНИЕ
+                        /*System.out.println("=====================");
+                        System.out.println(b.getX()+" "+b.getY());
+                        System.out.println(b.getDx()+" "+b.getDy());
+                        System.out.println(b.getCurrent()[0]+" "+b.getCurrent()[1]);
+                        System.out.println("=====================");*/
+                        for (int h = 0; h < bots.size(); h++) {
+                            if (bots.get(h).getX() == b.getCurrent()[0] || bots.get(h).getY() == b.getCurrent()[1]) {
+                                System.out.println("SUCCESS!");
+                                b.eat(bots.get(h), bots);
+                                break;
+                            }
+                        }
+                        count++;
+                        break;
+                    }
+                    else if(b.getCode()[count]==21) {//case(21): {  //                       ПОВОРОТ ВЛЕВО
+                        b.rotateL();
+                        count++;
+                        break;
+                    }
+
+                    else if(b.getCode()[count]==22) {//case(22): {   //                      ПОВОРОТ ВПРАВО
+                        b.rotateR();
+                        count++;
+                        break;
+                    }
+
+                    else if(b.getCode()[count]==23) {//case(23): {   //                      ПРОВЕРКА ЭНЕРГИИ
+                        count += b.energy();
+                        break;
+                    }
+
+                    else if(b.getCode()[count]==24) {//case(24):    //                      ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
+                        count += b.look(bots);
+                        break;
+                    }
+
+                    else if(b.getCode()[count]==2) {//case(2): {
+                        System.out.println("никого не видно");
+                    }
+
+
+                    else {//default: {
+                        System.out.println("BRUH " + b.getCode()[count]);
+                        count++;
+                    }
+
                 }
-            }
+
+        }
 
 //========================================отрисовка===========================================
             if (canvas != null) {
@@ -116,6 +118,7 @@ public class DrawThread extends Thread{
                     canvas.drawRect(0,0, canvas.getWidth(),canvas.getHeight(),background);
                     for (Bot i:bots) {
                         i.draw(canvas,paint);
+
                     }
                 } finally {
                     surfaceHolder.unlockCanvasAndPost(canvas);
