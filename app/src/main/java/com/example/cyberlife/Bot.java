@@ -17,6 +17,8 @@ public class Bot{
     private short energy;
 
 
+    private boolean InfoFlag=false;
+
     public Bot(int x, int y, short[] code, Color color) {
         this.x = x;
         this.y = y;
@@ -171,6 +173,15 @@ public class Bot{
 
     public int[] getCurrent(){
         return new int[]{x+dx, y+dy};
+    }
+
+    @Override
+    public String toString() {
+        return "Bot{" +
+                "x=" + x +
+                ", y=" + y +
+                ", energy=" + energy +
+                '}';
     }
 }
 

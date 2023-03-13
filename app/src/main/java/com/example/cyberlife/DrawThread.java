@@ -11,9 +11,10 @@ import java.util.ArrayList;
 
 public class DrawThread extends Thread{
     private final SurfaceHolder surfaceHolder;
-
+    private static boolean clickF=false;
+    private static int cy,cx;
     private volatile boolean running = true;//флаг для остановки потока
-
+    private Bot infoBot=null;
     Paint background = new Paint();
     Paint paint = new Paint();
 
@@ -26,7 +27,10 @@ public class DrawThread extends Thread{
     }
 
     public static void click(int x,int y){
-        System.out.println(x+" "+y);
+        //System.out.println(x+" "+y);
+        clickF=true;
+        cx=x;
+        cy=y;
     }
 
     public DrawThread(Context context, SurfaceHolder surfaceHolder) {
@@ -121,10 +125,33 @@ public class DrawThread extends Thread{
             if (canvas != null) {
                 try {
                     canvas.drawRect(0,0, canvas.getWidth(),canvas.getHeight(),background);
+                    boolean f=false;
+                    boolean f2=false;
                     for (Bot i:bots) {
                         i.draw(canvas,paint);
-                        //if (DrawView.)
+                        if (clickF){
+                            clickF=false;
+                            f2=true;
+                            if(cx>i.getX() && cx<i.getX()+50 && cy>i.getY() && cy<i.getY()+50){
+                                infoBot=i;
+                                f=true;
+                                System.out.println(i);
+                            }
+                            System.out.print(cx>i.getX());
+                            System.out.print(cx<i.getX()+50);
+                            System.out.print(cy>i.getY());
+                            System.out.print(cy<i.getY()+50);
+                            System.out.println();
+                            System.out.println(cx>i.getX() && cx<i.getX()+50 && cy>i.getY() && cy<i.getY()+50);
+                            System.out.println(infoBot);
+
+                            System.out.println(cx+" / "+cy);
+                        }
+                        if (i==infoBot){
+                            i.drawInfo(canvas);
+                        }
                     }
+                    if (!f && f2) infoBot=null;
 
                 } finally {
                     surfaceHolder.unlockCanvasAndPost(canvas);
