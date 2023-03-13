@@ -2,12 +2,14 @@ package com.example.cyberlife;
 
 
 import android.content.Context;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import androidx.annotation.NonNull;
 
 public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
+    public int cx,cy;
 
     private DrawThread drawThread;
 
@@ -20,6 +22,21 @@ public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(@NonNull SurfaceHolder holder) {
         drawThread = new DrawThread(getContext(),getHolder());
         drawThread.start();
+    }
+
+    public int getCx() {
+        return cx;
+    }
+
+    public int getCy() {
+        return cy;
+    }
+
+    public boolean onTouchEvent(MotionEvent event) {
+        cx=(int) event.getX();
+        cy=(int) event.getY();
+        return super.onTouchEvent(event);
+        //return true;
     }
 
     @Override

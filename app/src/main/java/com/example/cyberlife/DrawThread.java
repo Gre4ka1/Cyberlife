@@ -25,6 +25,10 @@ public class DrawThread extends Thread{
         paint.setStyle(Paint.Style.FILL);
     }
 
+    public static void click(int x,int y){
+        System.out.println(x+" "+y);
+    }
+
     public DrawThread(Context context, SurfaceHolder surfaceHolder) {
         this.surfaceHolder = surfaceHolder;
     }
@@ -32,6 +36,7 @@ public class DrawThread extends Thread{
     public void requestStop() {
         running = false;
     }
+
 
     @Override
     public void run() {
@@ -118,8 +123,9 @@ public class DrawThread extends Thread{
                     canvas.drawRect(0,0, canvas.getWidth(),canvas.getHeight(),background);
                     for (Bot i:bots) {
                         i.draw(canvas,paint);
-
+                        //if (DrawView.)
                     }
+
                 } finally {
                     surfaceHolder.unlockCanvasAndPost(canvas);
                 }

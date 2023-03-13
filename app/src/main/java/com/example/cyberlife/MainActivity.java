@@ -9,6 +9,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(new DrawView(this));
+        DrawView dv = new DrawView(this);
+        dv.setOnClickListener(v -> {DrawThread.click(dv.getCx(),dv.getCy());});
+        setContentView(dv);
     }
 }
