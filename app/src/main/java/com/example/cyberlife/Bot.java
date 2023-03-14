@@ -16,8 +16,9 @@ public class Bot{
     private Color color;
     private short energy;
 
+    private Paint p;
 
-    private boolean InfoFlag=false;
+
 
     public Bot(int x, int y, short[] code, Color color) {
         this.x = x;
@@ -27,15 +28,17 @@ public class Bot{
         this.dx= (new Random().nextInt(2)-1)*50;
         this.dy= (new Random().nextInt(2)-1)*50;
         if (dx==0 && dy==0) dx = 50;
-        this.energy=50;
+        this.energy=40;
     }
 
     public Bot(int x, int y) {
         this.x = x;
         this.y = y;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.color = Color.valueOf((int)(Math.random() * 0x1000000));
-        }
+        }*/
+        this.color=new Color();
+
         this.dx= (new Random().nextInt(2)-1)*50;
         this.dy= (new Random().nextInt(2)-1)*50;
         if (dx==0 && dy==0) dx = 50;
@@ -46,8 +49,11 @@ public class Bot{
         }
     }
 
-    public void draw(Canvas canvas, Paint paint){
+    public void draw(Canvas canvas, Paint paint,Paint p){
+
         canvas.drawRect(x,y, (x+50),(y+50),paint);
+        int xx=dx<0?x:dx==0?x+22:x+45,yy=dy<0?y:dy==0?y+22:y+45;
+        canvas.drawRect(xx,yy, (xx+5),(yy+5),p);
     }
     public void drawInfo(Canvas canvas){
         Paint text = new Paint();
@@ -71,6 +77,7 @@ public class Bot{
         y=y+dy;
         if(x+50>=canvas.getWidth() || x<=0) dx=dx*-1;
         if(y+50>=canvas.getHeight() || y<=0) dy=dy*-1;
+        energy-=10;
         //System.out.println("d: "+dx+" "+dy);
         //System.out.println(x+" "+y);
     }
@@ -79,7 +86,8 @@ public class Bot{
         if (energy>100) energy=100;
     }
     public Bot dublicate(){
-        return new Bot(x+dx,y+dy,code,color);
+        energy-=50;
+        return new Bot(x+dx,y+dy,code,new Color());
     }
     public void eat(Bot enemy, ArrayList<Bot> bots){
         bots.remove(enemy);
@@ -87,25 +95,55 @@ public class Bot{
         if (energy>100) energy=100;
     }
     public void rotateL(){
-        System.out.println(dx+" "+dy);
-        if (dx==50 && dy ==-50){ dx=0; dy=-50;}
-        else if (dx==0 && dy ==-50) {dx=-50; dy=-50;}
-        else if (dx==-50 && dy ==-50) {dx=-50; dy=0;}
-        else if (dx==-50 && dy ==0) {dx=-50; dy=50;}
-        else if (dx==-50 && dy ==50) {dx=0; dy=50;}
-        else if (dx==0 && dy ==50) {dx=50; dy=50;}
-        else if (dx==50 && dy ==50) {dx=50; dy=0;}
-        else if (dx==50 && dy ==0) {dx=50; dy=-50;}
+        //System.out.println(dx+" "+dy);
+        if (energy>=5) {
+            if (dx == 50 && dy == -50) {
+                dx = 0;
+                dy = -50;
+            }
+            else if (dx == 0 && dy == -50) {
+                dx = -50;
+                dy = -50;
+            }
+            else if (dx == -50 && dy == -50) {
+                dx = -50;
+                dy = 0;
+            }
+            else if (dx == -50 && dy == 0) {
+                dx = -50;
+                dy = 50;
+            }
+            else if (dx == -50 && dy == 50) {
+                dx = 0;
+                dy = 50;
+            }
+            else if (dx == 0 && dy == 50) {
+                dx = 50;
+                dy = 50;
+            }
+            else if (dx == 50 && dy == 50) {
+                dx = 50;
+                dy = 0;
+            }
+            else if (dx == 50 && dy == 0) {
+                dx = 50;
+                dy = -50;
+            }
+            energy-=5;
+        }
     }
     public void rotateR(){
-        if (dx==50 && dy ==-50){ dx=50; dy=0;}
-        else if (dx==50 && dy ==0) {dx=50; dy=50;}
-        else if (dx==50 && dy ==50) {dx=0; dy=50;}
-        else if (dx==0 && dy ==50) {dx=-50; dy=50;}
-        else if (dx==-50 && dy ==50) {dx=-50; dy=0;}
-        else if (dx==-50 && dy ==0) {dx=-50; dy=-50;}
-        else if (dx==-50 && dy ==-50) {dx=0; dy=-50;}
-        else if (dx==0 && dy ==-50) {dx=50; dy=-50;}
+        if (energy>=5){
+            if (dx==50 && dy ==-50){ dx=50; dy=0;}
+            else if (dx==50 && dy ==0) {dx=50; dy=50;}
+            else if (dx==50 && dy ==50) {dx=0; dy=50;}
+            else if (dx==0 && dy ==50) {dx=-50; dy=50;}
+            else if (dx==-50 && dy ==50) {dx=-50; dy=0;}
+            else if (dx==-50 && dy ==0) {dx=-50; dy=-50;}
+            else if (dx==-50 && dy ==-50) {dx=0; dy=-50;}
+            else if (dx==0 && dy ==-50) {dx=50; dy=-50;}
+            energy-=5;
+        }
     }
     public short energy(){
         if (energy>=50) return (short) (1);
@@ -182,6 +220,13 @@ public class Bot{
                 ", y=" + y +
                 ", energy=" + energy +
                 '}';
+    }
+    public String code(){
+        String text="";
+        for (short t:code) {
+            text+=" "+t;
+        }
+        return text;
     }
 }
 
