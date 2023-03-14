@@ -17,7 +17,7 @@ public class Bot{
     private short energy;
 
     private Paint p;
-
+    public static int dEnergy=25;
 
 
     public Bot(int x, int y, short[] code, Color color) {
@@ -82,11 +82,11 @@ public class Bot{
         //System.out.println(x+" "+y);
     }
     public void generate(){
-        energy+=25;
+        energy+=dEnergy;
         if (energy>100) energy=100;
     }
     public Bot dublicate(){
-        //energy-=50;
+        energy-=50;
         return new Bot(x+dx,y+dy,code,new Color());
     }
     public void eat(Bot enemy, ArrayList<Bot> bots){
