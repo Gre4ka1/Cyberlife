@@ -4,6 +4,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.SurfaceHolder;
+
+import androidx.core.content.ContextCompat;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -16,16 +19,29 @@ public class DrawThread extends Thread{
 
     private Bot infoBot=null;
     Paint background = new Paint();
+    Paint background2 = new Paint();
     Paint paint = new Paint();
     Paint p = new Paint();
+    Paint b1 = new Paint();
+    Paint b2 = new Paint();
+    Paint b3 = new Paint();
+    Color c1 = new Color();
+
 
     {
         background.setColor(Color.WHITE);
         background.setStyle(Paint.Style.FILL);
+        background2.setColor(Color.GRAY);
+        background2.setStyle(Paint.Style.FILL);
         paint.setColor(Color.RED);
         paint.setStyle(Paint.Style.FILL);
         p.setColor(Color.WHITE);
         p.setStyle(Paint.Style.FILL);
+        b1.setColor(7976768);
+        b1.setStyle(Paint.Style.FILL);
+        
+        b2.setColor(Color.WHITE);
+        b3.setStyle(Paint.Style.FILL);
     }
 
     public static void click(int x,int y){
@@ -45,9 +61,9 @@ public class DrawThread extends Thread{
     @Override
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
-        bots.add(new Bot(500,500,new short[]{19,9,9,8108,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
+        bots.add(new Bot(500,500,new short[]{24,21,19,8108,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
         //bots.add(bots.get(0).dublicate());
-        /*for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             //Canvas canvas = surfaceHolder.lockCanvas();
             //try{
                 int newx = (int)(new Random().nextInt(500) /50)*50;
@@ -66,12 +82,13 @@ public class DrawThread extends Thread{
             //} finally {
             //    surfaceHolder.unlockCanvasAndPost(canvas);
             //}
-        }*/
+        }
         //System.out.println(bots.get(0).code());
         while (running) {
             for (int i=0;i<bots.size();i++) {
                 bots.get(i).setEnergy((short) (bots.get(i).getEnergy()-5));
-                System.out.println(bots.get(i).toString());
+                System.out.println(bots.get(i).toString() );
+                System.out.println(bots.get(i).code());
                 if (bots.get(i).getEnergy()<=0){
                     bots.remove(bots.get(i));
                     i--;
@@ -96,11 +113,11 @@ public class DrawThread extends Thread{
                         count++;
                         break;
                     }
-                    else if(b.getCode()[count]==19) {//case(18): {   //
+                    else if(b.getCode()[count]==19) {//case(19): {   //
                         //if (b.getEnergy()>=50) {
                         boolean f4 = true;
                         for (Bot h : bots) {
-                            if (h.getX() == b.getX() + b.getDx() && h.getY() == b.getY() + b.getDy() || b.getX()+b.getDx()<0 || b.getX()+b.getDx()>=canvas.getWidth() || b.getY()+b.getDy()<0 || b.getY()+b.getDy()>=canvas.getHeight()) {
+                            if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0]<0 || b.getTarget()[0]>=canvas.getWidth() || b.getTarget()[1]<0 || b.getTarget()[1]>=canvas.getHeight()-150) {
                                 f4 = false;
                                 break;
                             }
@@ -115,12 +132,6 @@ public class DrawThread extends Thread{
                         else count++;
                         //}
                     }
-                    /*else if(b.getCode()[count]==109) { //case(19):     //                      РАЗМНОЖЕНИЕ
-                        bots.add(b.dublicate());
-                        System.out.println(b.getDx() + " " + b.getDy());
-                        count++;
-                        break;
-                    }*/
                     else if(b.getCode()[count]==20) {//case(20): {   //                      ПОЕДАНИЕ
                         /*System.out.println("=====================");
                         System.out.println(b.getX()+" "+b.getY());
@@ -128,7 +139,7 @@ public class DrawThread extends Thread{
                         System.out.println(b.getCurrent()[0]+" "+b.getCurrent()[1]);
                         System.out.println("=====================");*/
                         for (int h = 0; h < bots.size(); h++) {
-                            if (bots.get(h).getX() == b.getCurrent()[0] || bots.get(h).getY() == b.getCurrent()[1]) {
+                            if (bots.get(h).getX() == b.getTarget()[0] || bots.get(h).getY() == b.getTarget()[1]) {
                                 System.out.println("SUCCESS!");
                                 b.eat(bots.get(h), bots);
                                 break;
@@ -149,15 +160,13 @@ public class DrawThread extends Thread{
                     }
                     else if(b.getCode()[count]==23) {//case(23): {   //                      ПРОВЕРКА ЭНЕРГИИ
                         count += b.energy();
-                        break;
+                        //break;
                     }
                     else if(b.getCode()[count]==24) {//case(24):    //                      ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
                         count += b.look(bots);
-                        break;
+                        //break;
                     }
-                    /*else if(b.getCode()[count]==2) {//case(2): {
-                        System.out.println("никого не видно");
-                    }*/
+
                     else {//default: {
                         //System.out.println("BRUH " + b.getCode()[count]);
                         count++;
@@ -168,6 +177,7 @@ public class DrawThread extends Thread{
             if (canvas != null) {
                 try {
                     canvas.drawRect(0,0, canvas.getWidth(),canvas.getHeight(),background);
+                    //canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     boolean f=false;
                     boolean f2=false;
                     for (Bot i:bots) {
@@ -196,6 +206,10 @@ public class DrawThread extends Thread{
                         }
                     }
                     if (!f && f2) infoBot=null;
+                    canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
+                    canvas.drawRect(20,canvas.getHeight()-140, 200,canvas.getHeight()-20,b1);
+                    canvas.drawRect(220,canvas.getHeight()-140, 420,canvas.getHeight()-20,b1);
+
 
                 } finally {
                     surfaceHolder.unlockCanvasAndPost(canvas);

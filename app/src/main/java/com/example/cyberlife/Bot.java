@@ -73,10 +73,10 @@ public class Bot{
 
     public void move(Canvas canvas){
         //System.out.println(x+" "+y);
+        if(getTarget()[0]>=canvas.getWidth() || getTarget()[0]<0) dx=dx*-1;
+        if(getTarget()[1]>=canvas.getHeight()-150 || getTarget()[1]<0) dy=dy*-1;
         x=x+dx;
         y=y+dy;
-        if(x+50>=canvas.getWidth() || x<=0) dx=dx*-1;
-        if(y+50>=canvas.getHeight() || y<=0) dy=dy*-1;
         energy-=10;
         //System.out.println("d: "+dx+" "+dy);
         //System.out.println(x+" "+y);
@@ -86,7 +86,7 @@ public class Bot{
         if (energy>100) energy=100;
     }
     public Bot dublicate(){
-        energy-=50;
+        //energy-=50;
         return new Bot(x+dx,y+dy,code,new Color());
     }
     public void eat(Bot enemy, ArrayList<Bot> bots){
@@ -209,7 +209,7 @@ public class Bot{
         return y;
     }
 
-    public int[] getCurrent(){
+    public int[] getTarget(){
         return new int[]{x+dx, y+dy};
     }
 
