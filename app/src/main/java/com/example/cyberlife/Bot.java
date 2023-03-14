@@ -87,7 +87,15 @@ public class Bot{
     }
     public Bot dublicate(){
         energy-=50;
-        return new Bot(x+dx,y+dy,code,new Color());
+        short[] newCode= new short[16];
+        for (int i=0;i<16;i++) {
+            int a = new Random().nextInt(10);
+            if (a!=1) {
+                newCode[i] = code[i];
+            }
+            else newCode[i] = (short) (new Random().nextInt(32));
+        }
+        return new Bot(x+dx,y+dy,newCode,new Color());
     }
     public void eat(Bot enemy, ArrayList<Bot> bots){
         bots.remove(enemy);

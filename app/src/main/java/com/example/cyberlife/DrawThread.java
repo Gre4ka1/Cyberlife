@@ -79,7 +79,8 @@ public class DrawThread extends Thread{
     @Override
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
-        bots.add(new Bot(500,500,new short[]{17,21,19,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
+        bots.add(new Bot(500,500,new short[]{24,21,19,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
+        bots.add(new Bot(0,0,new short[]{17,21,19,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
         //bots.add(bots.get(0).dublicate());
         for (int i = 0; i < 10; i++) {
             //Canvas canvas = surfaceHolder.lockCanvas();
