@@ -135,12 +135,15 @@ public class DrawThread extends Thread{
                 }
 
             }
+            System.out.println("---------------------------------------4");
+
             Canvas canvas = surfaceHolder.lockCanvas();
             byte k=0;
-            for (int bb=0;bb<bots.size()-k;bb++) { //TODO cdelay blyat chtob pri udalenii ne lomalsya cikl
+            for (int bb=0;bb<bots.size()-k;bb++) {
                 Bot b=bots.get(bb);
 
                 for (short count = 0; count < b.getCode().length;) {
+                    System.out.println(b.getCode()[count]);
                     //switch (b.getCode()[count]){
                     if(b.getCode()[count]==17) {//case(17): {   //                      ГЕНЕРАЦИЯ
                         b.generate();
@@ -205,16 +208,27 @@ public class DrawThread extends Thread{
                         count += b.look(bots);
                         //break;
                     }
-
                     else {//default: {
                         //System.out.println("BRUH " + b.getCode()[count]);
-                        count+=b.getCode()[count];
+                        if (b.getCode()[count]!=0){
+                            count+=b.getCode()[count];
+                        }
+                        else break;
                     }
                 }
+
+                System.out.println("---------------------------------------3.6");
             }
+            System.out.println("---------------------------------------3.5");
 //========================================отрисовка===========================================
+            System.out.println("---------------------------------------0");
+            System.out.println("---------------------------------------0");
+            System.out.println("---------------------------------------0");
             if (canvas != null) {
                 try {
+                    System.out.println("---------------------------------------1");
+                    System.out.println("---------------------------------------1");
+                    System.out.println("---------------------------------------1");
                     canvas.drawRect(0,0, canvas.getWidth(),canvas.getHeight(),background);
                     //canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     for (Bot i:bots) {
@@ -222,7 +236,6 @@ public class DrawThread extends Thread{
                     }
                     boolean f=false;
                     boolean f2=false;
-                    //for (Bot i:bots) {
                     if (clickF){
                         //System.out.println(i+" 1234567890");
                         clickF=false;
@@ -234,15 +247,7 @@ public class DrawThread extends Thread{
                                 f = true;
                                 System.out.println(i);
                             }
-                            //canvas.drawText("lfg4h56",50,50,p);
-                            /*System.out.print(cx > i.getX());
-                            System.out.print(cx < i.getX() + 50);
-                            System.out.print(cy > i.getY());
-                            System.out.print(cy < i.getY() + 50);
-                            System.out.println();
-                            System.out.println(cx > i.getX() && cx < i.getX() + 50 && cy > i.getY() && cy < i.getY() + 50);
                             System.out.println(infoBot);
-*/
                             System.out.println(cx + " / " + cy);
                         }
                         //-------------------------------
@@ -251,11 +256,7 @@ public class DrawThread extends Thread{
                         if (cx>20 && cx<200 && cy>canvas.getHeight()-125 && cy<canvas.getHeight()-25){// SAVE
                             if (infoBot!=null){
                                 saveCode=infoBot.getCode();
-                                /*File file = new File("\\storage\\emulated\\0\\Download\\codes\\Bots_codes.txt");
-                                file.setWritable(true);
-                                //FileWriter fileWriter = new FileWriter(file);
-                                FileOutputStream fos = new FileOutputStream(file,true);
-                                fos.write(7);*/
+                                //TODO save code in file
                             }
                         }
                         if (cx>220 && cx<400 && cy>canvas.getHeight()-125 && cy<canvas.getHeight()-25){// Load
@@ -273,7 +274,9 @@ public class DrawThread extends Thread{
                             settings_menu=!settings_menu;
                         }
                     }
-
+                    System.out.println("---------------------------------------2");
+                    System.out.println("---------------------------------------2");
+                    System.out.println("---------------------------------------2");
                     for (Bot i :bots) {
                         //i.draw(canvas,paint,p);
                         if (i==infoBot){
@@ -282,9 +285,10 @@ public class DrawThread extends Thread{
                     }
 
 
-                    //}
                     if (!f && f2) infoBot=null;
-
+                    System.out.println("---------------------------------------3");
+                    System.out.println("---------------------------------------3");
+                    System.out.println("---------------------------------------3");
                     canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
                     canvas.drawRect(220,canvas.getHeight()-125, 400,canvas.getHeight()-25,b2);
