@@ -1,8 +1,13 @@
 package com.example.cyberlife;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Picture;
+import android.graphics.Rect;
 import android.view.SurfaceHolder;
 
 import androidx.core.content.ContextCompat;
@@ -18,6 +23,7 @@ public class DrawThread extends Thread{
     private final SurfaceHolder surfaceHolder;
 
     private static boolean clickF=false;
+    private static boolean settings_menu = false;
     private static int cy,cx;
     private volatile boolean running = true;//флаг для остановки потока
 
@@ -29,10 +35,13 @@ public class DrawThread extends Thread{
     Paint p = new Paint();
     Paint p2 = new Paint();
     Paint p3 = new Paint();
+    Paint p4 = new Paint();
+    Paint p5 = new Paint();
     Paint b1 = new Paint();
     Paint b2 = new Paint();
     Paint b3 = new Paint();
     Paint b4 = new Paint();
+    Paint settingP = new Paint();
 
 
 
@@ -47,19 +56,30 @@ public class DrawThread extends Thread{
         p.setStyle(Paint.Style.FILL);
         p2.setColor(Color.BLACK);
         p2.setStyle(Paint.Style.FILL);
+        p2.setTextSize(54);
+        p2.setColor(Color.WHITE);
         b1.setColor(0xFF00CC00);
         b1.setStyle(Paint.Style.FILL);
 
         b2.setColor(0xFF7F00FF);
         b2.setStyle(Paint.Style.FILL);
+        p2.setStrokeWidth(4);
 
         p3.setTextSize(24);
         p3.setColor(Color.BLACK);
+
+        p4.setTextSize(40);
+        p4.setColor(0xAADFDFDF);
+
+        p5.setTextSize(38);
 
         b3.setColor(0xFF00CC00);
         b3.setStyle(Paint.Style.FILL);
         b4.setColor(0xFFE61414);
         b4.setStyle(Paint.Style.FILL);
+
+        settingP.setColor(0xFF777777);
+        settingP.setStyle(Paint.Style.FILL);
     }
 
     public static void click(int x,int y){
@@ -243,12 +263,14 @@ public class DrawThread extends Thread{
                                 infoBot.setCode(saveCode);
                             }
                         }
-                        if (cx>canvas.getWidth()-100 && cy>canvas.getHeight()-150 && cy<canvas.getHeight()-75){
+                        /*if (cx>canvas.getWidth()-100 && cy>canvas.getHeight()-150 && cy<canvas.getHeight()-75){
                             Bot.dEnergy+=5;
                         }
                         if (cx>canvas.getWidth()-100 && cy>canvas.getHeight()-75){
                             if (Bot.dEnergy>0) Bot.dEnergy-=5;
-
+                        }*/
+                        if (cx>canvas.getWidth()-150 && cy > canvas.getHeight()-150){
+                            settings_menu=!settings_menu;
                         }
                     }
 
@@ -266,25 +288,40 @@ public class DrawThread extends Thread{
                     canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
                     canvas.drawRect(220,canvas.getHeight()-125, 400,canvas.getHeight()-25,b2);
-                    p2.setTextSize(54);
-                    p2.setColor(Color.WHITE);
+
                     canvas.drawText("Save",50,canvas.getHeight()-80,p2);
                     canvas.drawText("Load",250,canvas.getHeight()-80,p2);
 
-                    canvas.drawRect(canvas.getWidth()-100,canvas.getHeight()-150,canvas.getWidth(),canvas.getHeight()-75,b3);
+                    /*canvas.drawRect(canvas.getWidth()-100,canvas.getHeight()-150,canvas.getWidth(),canvas.getHeight()-75,b3);
                     canvas.drawRect(canvas.getWidth()-100,canvas.getHeight()-75,canvas.getWidth(),canvas.getHeight(),b4);
                     canvas.drawText("+",canvas.getWidth()-60,canvas.getHeight()-100,p3);
                     canvas.drawText("-",canvas.getWidth()-60,canvas.getHeight()-40,p3);
-                    canvas.drawText(Bot.dEnergy+"",canvas.getWidth()-60,canvas.getHeight()-66,p3);
+                    canvas.drawText(Bot.dEnergy+"",canvas.getWidth()-60,canvas.getHeight()-66,p3);*/
 
+                    canvas.drawRect(canvas.getWidth()-150,canvas.getHeight()-150,canvas.getWidth(),canvas.getHeight(),settingP);
+                    canvas.drawText("Settings",canvas.getWidth()-140,canvas.getHeight()-90,p5);
+                    //canvas.drawRect(,b4);
+                    /*Bitmap sett = BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.setting);
+                    canvas.drawBitmap(sett,,p);*/
 
                     String text="";
                     for (int j = 0; j < 4; j++) {
-                        text="";
-                        for (int i = j*4; i < (j+1)*4; i++) {
-                            text=text+" "+(saveCode[i]<10?"  "+saveCode[i]:saveCode[i]);
+                        text = "";
+                        for (int i = j * 4; i < (j + 1) * 4; i++) {
+                            text = text + " " + (saveCode[i] < 10 ? "  " + saveCode[i] : saveCode[i]);
                         }
-                        canvas.drawText(text,430,canvas.getHeight()-90+j*19,p3);
+                        canvas.drawText(text, 425, canvas.getHeight() - 90 + j * 19, p3);
+                    }
+
+                    // меню настроек
+                    if (settings_menu){
+                        canvas.drawRect(canvas.getWidth()-400,canvas.getHeight()-650, canvas.getWidth(),canvas.getHeight()-150,background2);
+                        canvas.drawText("Sun",canvas.getWidth()-390,canvas.getHeight()-620,p3);
+                        canvas.drawLine(canvas.getWidth()-250,canvas.getHeight()-630,canvas.getWidth()-50,canvas.getHeight()-630,p2);
+                        canvas.drawText("Mutation",canvas.getWidth()-390,canvas.getHeight()-580,p3);
+                        canvas.drawLine(canvas.getWidth()-250,canvas.getHeight()-590,canvas.getWidth()-50,canvas.getHeight()-590,p2);
+                        canvas.drawText("Start energy",canvas.getWidth()-390,canvas.getHeight()-540,p3);
+                        canvas.drawLine(canvas.getWidth()-250,canvas.getHeight()-550,canvas.getWidth()-50,canvas.getHeight()-550,p2);
                     }
 
                     /*for (int i = 0; i<saveCode.length;i++) {
