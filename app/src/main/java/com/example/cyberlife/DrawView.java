@@ -10,6 +10,10 @@ import androidx.annotation.NonNull;
 
 public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
     public int cx,cy;
+    public volatile Context context;
+    public void getContext1(){
+
+    }
 
     private DrawThread drawThread;
 

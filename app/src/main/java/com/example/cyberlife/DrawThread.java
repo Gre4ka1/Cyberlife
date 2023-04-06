@@ -1,4 +1,9 @@
 package com.example.cyberlife;
+import static android.content.Context.MODE_APPEND;
+import static android.content.Context.MODE_PRIVATE;
+
+
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -8,11 +13,16 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Picture;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.SurfaceHolder;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.core.content.ContextCompat;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -20,12 +30,17 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class DrawThread extends Thread{
+    private Context context;
+
+
     private final SurfaceHolder surfaceHolder;
 
     private static boolean clickF=false;
+    private static byte stopGame=1;
     private static boolean settings_menu = false;
     private static int cy,cx;
     private volatile boolean running = true;//флаг для остановки потока
+
 
     private Bot infoBot=null;
     private short[] saveCode = new short[16];
@@ -42,6 +57,8 @@ public class DrawThread extends Thread{
     Paint b3 = new Paint();
     Paint b4 = new Paint();
     Paint settingP = new Paint();
+    Paint offB = new Paint();
+    Paint onB = new Paint();
 
 
 
@@ -80,6 +97,9 @@ public class DrawThread extends Thread{
 
         settingP.setColor(0xFF777777);
         settingP.setStyle(Paint.Style.FILL);
+
+        offB.setColor(0xAAA0A6AB);
+        onB.setColor(0xAAFF8500);
     }
 
     public static void click(int x,int y){
@@ -92,15 +112,30 @@ public class DrawThread extends Thread{
 
     public DrawThread(Context context, SurfaceHolder surfaceHolder) {
         this.surfaceHolder = surfaceHolder;
+        this.context = context;
     }
     public void requestStop() {
         running = false;
+    }
+
+    public static Bitmap drawableToBitmap (Drawable drawable) {
+
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable)drawable).getBitmap();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
     }
     @Override
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
         bots.add(new Bot(500,500,new short[]{24,21,19,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
-        bots.add(new Bot(0,0,new short[]{17,21,19,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
+        bots.add(new Bot(0,0,new short[]{23,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
         //bots.add(bots.get(0).dublicate());
         for (int i = 0; i < 10; i++) {
             //Canvas canvas = surfaceHolder.lockCanvas();
@@ -125,110 +160,97 @@ public class DrawThread extends Thread{
         //System.out.println(bots.get(0).code());
         while (running) {
             for (int i=0;i<bots.size();i++) {
-                bots.get(i).setEnergy((short) (bots.get(i).getEnergy()-5));
-                //System.out.println(bots.get(i).toString() );
-                //System.out.println(bots.get(i).code());
-                if (bots.get(i).getEnergy()<=0){
-                    bots.remove(bots.get(i));
-                    i--;
-                    continue;
+                if(stopGame!=0) {
+                    bots.get(i).setEnergy((short) (bots.get(i).getEnergy() - 5));
+                    //System.out.println(bots.get(i).toString() );
+                    //System.out.println(bots.get(i).code());
+                    if (bots.get(i).getEnergy() <= 0) {
+                        bots.remove(bots.get(i));
+                        i--;
+                        continue;
+                    }
                 }
 
             }
-            System.out.println("---------------------------------------4");
+            
 
             Canvas canvas = surfaceHolder.lockCanvas();
             byte k=0;
-            for (int bb=0;bb<bots.size()-k;bb++) {
-                Bot b=bots.get(bb);
+            if (stopGame!=0) {
+                for (int bb = 0; bb < bots.size() - k; bb++) {
+                    Bot b = bots.get(bb);
 
-                for (short count = 0; count < b.getCode().length;) {
-                    System.out.println(b.getCode()[count]);
-                    //switch (b.getCode()[count]){
-                    if(b.getCode()[count]==17) {//case(17): {   //                      ГЕНЕРАЦИЯ
-                        b.generate();
-                        count++;
-                        break;
-                    }
-                    else if(b.getCode()[count]==18) {//case(18): {   //                       ДВИЖЕНИЕ
-                        b.move(canvas);
-                        count++;
-                        break;
-                    }
-                    else if(b.getCode()[count]==19) {//case(19): {   //
-                        //if (b.getEnergy()>=50) {
-                        boolean f4 = true;
-                        for (Bot h : bots) {
-                            if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0]<0 || b.getTarget()[0]>=canvas.getWidth() || b.getTarget()[1]<0 || b.getTarget()[1]>=canvas.getHeight()-150) {
-                                f4 = false;
-                                break;
-                            }
-                        }
-                        if (f4) {
-                            bots.add(b.dublicate());
-                            k++;
-                            //System.out.println(b.getX() + " " + b.getY());
+                    for (short count = 0; count < b.getCode().length; ) {
+                        System.out.println(b.getCode()[count]);
+                        //switch (b.getCode()[count]){
+                        if (b.getCode()[count] == 17) {//case(17): {   //                      ГЕНЕРАЦИЯ
+                            b.generate();
                             count++;
                             break;
-                        }
-                        else count++;
-                        //}
-                    }
-                    else if(b.getCode()[count]==20) {//case(20): {   //                      ПОЕДАНИЕ
+                        } else if (b.getCode()[count] == 18) {//case(18): {   //                       ДВИЖЕНИЕ
+                            b.move(canvas);
+                            count++;
+                            break;
+                        } else if (b.getCode()[count] == 19) {//case(19): {   //
+                            //if (b.getEnergy()>=50) {
+                            boolean f4 = true;
+                            for (Bot h : bots) {
+                                if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0] < 0 || b.getTarget()[0] >= canvas.getWidth() || b.getTarget()[1] < 0 || b.getTarget()[1] >= canvas.getHeight() - 150) {
+                                    f4 = false;
+                                    break;
+                                }
+                            }
+                            if (f4) {
+                                bots.add(b.dublicate());
+                                k++;
+                                //System.out.println(b.getX() + " " + b.getY());
+                                count++;
+                                break;
+                            } else count++;
+                            //}
+                        } else if (b.getCode()[count] == 20) {//case(20): {   //                      ПОЕДАНИЕ
                         /*System.out.println("=====================");
                         System.out.println(b.getX()+" "+b.getY());
                         System.out.println(b.getDx()+" "+b.getDy());
                         System.out.println(b.getCurrent()[0]+" "+b.getCurrent()[1]);
                         System.out.println("=====================");*/
-                        for (int h = 0; h < bots.size(); h++) {
-                            if (bots.get(h).getX() == b.getTarget()[0] || bots.get(h).getY() == b.getTarget()[1]) {
-                                System.out.println("SUCCESS!");
-                                b.eat(bots.get(h), bots);
-                                break;
+                            for (int h = 0; h < bots.size(); h++) {
+                                if (bots.get(h).getX() == b.getTarget()[0] || bots.get(h).getY() == b.getTarget()[1]) {
+                                    System.out.println("SUCCESS!");
+                                    b.eat(bots.get(h), bots);
+                                    break;
+                                }
                             }
+                            count++;
+                            break;
+                        } else if (b.getCode()[count] == 21) {//case(21): {  //                       ПОВОРОТ ВЛЕВО
+                            b.rotateL();
+                            count++;
+                            break;
+                        } else if (b.getCode()[count] == 22) {//case(22): {   //                      ПОВОРОТ ВПРАВО
+                            b.rotateR();
+                            count++;
+                            break;
+                        } else if (b.getCode()[count] == 23) {//case(23): {   //                      ПРОВЕРКА ЭНЕРГИИ
+                            count += b.energy();
+                            //break;
+                        } else if (b.getCode()[count] == 24) {//case(24):    //                      ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
+                            count += b.look(bots);
+                            //break;
+                        } else {//default: {
+                            //System.out.println("BRUH " + b.getCode()[count]);
+                            if (b.getCode()[count] != 0) {
+                                count += b.getCode()[count];
+                            } else break;
                         }
-                        count++;
-                        break;
-                    }
-                    else if(b.getCode()[count]==21) {//case(21): {  //                       ПОВОРОТ ВЛЕВО
-                        b.rotateL();
-                        count++;
-                        break;
-                    }
-                    else if(b.getCode()[count]==22) {//case(22): {   //                      ПОВОРОТ ВПРАВО
-                        b.rotateR();
-                        count++;
-                        break;
-                    }
-                    else if(b.getCode()[count]==23) {//case(23): {   //                      ПРОВЕРКА ЭНЕРГИИ
-                        count += b.energy();
-                        //break;
-                    }
-                    else if(b.getCode()[count]==24) {//case(24):    //                      ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
-                        count += b.look(bots);
-                        //break;
-                    }
-                    else {//default: {
-                        //System.out.println("BRUH " + b.getCode()[count]);
-                        if (b.getCode()[count]!=0){
-                            count+=b.getCode()[count];
-                        }
-                        else break;
                     }
                 }
-
-                System.out.println("---------------------------------------3.6");
             }
-            System.out.println("---------------------------------------3.5");
+
 //========================================отрисовка===========================================
-            System.out.println("---------------------------------------0");
-            System.out.println("---------------------------------------0");
-            System.out.println("---------------------------------------0");
+
             if (canvas != null) {
                 try {
-                    System.out.println("---------------------------------------1");
-                    System.out.println("---------------------------------------1");
-                    System.out.println("---------------------------------------1");
                     canvas.drawRect(0,0, canvas.getWidth(),canvas.getHeight(),background);
                     //canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     for (Bot i:bots) {
@@ -236,12 +258,12 @@ public class DrawThread extends Thread{
                     }
                     boolean f=false;
                     boolean f2=false;
-                    if (clickF){
+                    if (clickF) {
                         //System.out.println(i+" 1234567890");
-                        clickF=false;
-                        f2=true;
+                        clickF = false;
+                        f2 = true;
                         //----------проверка на выделение бота ------------
-                        for (Bot i:bots) {
+                        for (Bot i : bots) {
                             if (cx > i.getX() && cx < i.getX() + 50 && cy > i.getY() && cy < i.getY() + 50) {
                                 infoBot = i;
                                 f = true;
@@ -253,14 +275,44 @@ public class DrawThread extends Thread{
                         //-------------------------------
 
                         //------------проверка на нажатие кнопок------------------
-                        if (cx>20 && cx<200 && cy>canvas.getHeight()-125 && cy<canvas.getHeight()-25){// SAVE
-                            if (infoBot!=null){
-                                saveCode=infoBot.getCode();
+                        if (cx > 20 && cx < 200 && cy > canvas.getHeight() - 125 && cy < canvas.getHeight() - 25) {// SAVE
+                            if (infoBot != null) {
+                                saveCode = infoBot.getCode();
+
+                                File file;
+                                try {
+                                    file = new File(context.getFilesDir(),"code_.txt");
+                                    if (!file.exists()) {
+                                        file.createNewFile();
+                                    }
+                                    // Открытие потока для записи в файл
+                                    FileOutputStream outputStream = new FileOutputStream(file,true);
+
+                                    // Записываем строку "текст" в файл
+                                    String data = "";
+                                    for (short sh:saveCode) {
+                                        data+=sh+" ";
+
+                                    }
+                                    data+="\n";
+                                    outputStream.write(data.getBytes());
+
+                                    // Закрытие потока записи
+                                    outputStream.close();
+
+                                } catch (FileNotFoundException e) {
+                                    //Toast.makeText(context, "Ошибка FileNotFound", Toast.LENGTH_SHORT).show();
+                                    throw new RuntimeException(e);
+                                } catch (IOException e) {
+                                    //Toast.makeText(context, "Ошибка какая-то", Toast.LENGTH_SHORT).show();
+                                    throw new RuntimeException(e);
+                                }
+
                                 //TODO save code in file
                             }
                         }
-                        if (cx>220 && cx<400 && cy>canvas.getHeight()-125 && cy<canvas.getHeight()-25){// Load
-                            if (infoBot!=null && saveCode!=null){
+                        if (cx > 220 && cx < 400 && cy > canvas.getHeight() - 125 && cy < canvas.getHeight() - 25) {// Load
+                            if (infoBot != null && saveCode != null) {
                                 infoBot.setCode(saveCode);
                             }
                         }
@@ -270,13 +322,17 @@ public class DrawThread extends Thread{
                         if (cx>canvas.getWidth()-100 && cy>canvas.getHeight()-75){
                             if (Bot.dEnergy>0) Bot.dEnergy-=5;
                         }*/
-                        if (cx>canvas.getWidth()-150 && cy > canvas.getHeight()-150){
-                            settings_menu=!settings_menu;
+                        if (cx > canvas.getWidth() - 150 && cy > canvas.getHeight() - 150) {
+                            settings_menu = !settings_menu;
+                        }
+                        if (cx > canvas.getWidth()-100 && cy < 100){
+                            stopGame= (byte) (stopGame==0?1:0);
+                        }
+                        if (cx > canvas.getWidth()-80 && cy < 180 && cy > 100){
+                            stopGame= (byte) (stopGame==1 || stopGame==0? 2:1);
                         }
                     }
-                    System.out.println("---------------------------------------2");
-                    System.out.println("---------------------------------------2");
-                    System.out.println("---------------------------------------2");
+
                     for (Bot i :bots) {
                         //i.draw(canvas,paint,p);
                         if (i==infoBot){
@@ -286,9 +342,7 @@ public class DrawThread extends Thread{
 
 
                     if (!f && f2) infoBot=null;
-                    System.out.println("---------------------------------------3");
-                    System.out.println("---------------------------------------3");
-                    System.out.println("---------------------------------------3");
+
                     canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
                     canvas.drawRect(220,canvas.getHeight()-125, 400,canvas.getHeight()-25,b2);
@@ -302,20 +356,27 @@ public class DrawThread extends Thread{
                     canvas.drawText("-",canvas.getWidth()-60,canvas.getHeight()-40,p3);
                     canvas.drawText(Bot.dEnergy+"",canvas.getWidth()-60,canvas.getHeight()-66,p3);*/
 
-                    canvas.drawRect(canvas.getWidth()-150,canvas.getHeight()-150,canvas.getWidth(),canvas.getHeight(),settingP);
-                    canvas.drawText("Settings",canvas.getWidth()-140,canvas.getHeight()-90,p5);
-                    //canvas.drawRect(,b4);
-                    /*Bitmap sett = BitmapFactory.decodeResource(Resources.getSystem(),R.drawable.setting);
-                    canvas.drawBitmap(sett,,p);*/
+                    //canvas.drawRect(canvas.getWidth()-150,canvas.getHeight()-150,canvas.getWidth(),canvas.getHeight(),settingP);Drawable sett =
+                    Bitmap sett = drawableToBitmap(context.getResources().getDrawable(R.drawable.setting));
+                    sett = Bitmap.createScaledBitmap(sett, 150, 150,true);
+                    canvas.drawBitmap(sett,canvas.getWidth()-150,canvas.getHeight()-150,p);
 
-                    String text="";
+
+
+                    canvas.drawCircle(canvas.getWidth()-50,50, 50 ,stopGame==0?onB:offB);
+                    canvas.drawCircle(canvas.getWidth()-40,140, 40 ,stopGame==2?onB:offB);
+                    //canvas.drawRect(canvas.getWidth()-225,canvas.getHeight()-100,canvas.getWidth()-150,canvas.getHeight()-50,stopGame==1?onB:offB);
+                    //canvas.drawRect(canvas.getWidth()-225,canvas.getHeight()-50,canvas.getWidth()-150,canvas.getHeight(),stopGame==2?onB:offB);
+
+
+                    /*String text="";
                     for (int j = 0; j < 4; j++) {
                         text = "";
                         for (int i = j * 4; i < (j + 1) * 4; i++) {
                             text = text + " " + (saveCode[i] < 10 ? "  " + saveCode[i] : saveCode[i]);
                         }
                         canvas.drawText(text, 425, canvas.getHeight() - 90 + j * 19, p3);
-                    }
+                    }*/
 
                     // меню настроек
                     if (settings_menu){
