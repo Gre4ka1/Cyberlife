@@ -258,6 +258,11 @@ public class DrawThread extends Thread{
                     }
                     boolean f=false;
                     boolean f2=false;
+                    Button pause = new Button(canvas.getWidth()-50, 50, 50);
+                    Button boost = new Button(canvas.getWidth()-40, 140, 40);
+                    Button save = new Button(20, canvas.getHeight()-125, 180,100);
+                    Button load = new Button(220, canvas.getHeight()-125, 180,100);
+
                     if (clickF) {
                         //System.out.println(i+" 1234567890");
                         clickF = false;
@@ -308,12 +313,13 @@ public class DrawThread extends Thread{
                                     throw new RuntimeException(e);
                                 }
 
-                                //TODO save code in file
+
                             }
                         }
                         if (cx > 220 && cx < 400 && cy > canvas.getHeight() - 125 && cy < canvas.getHeight() - 25) {// Load
                             if (infoBot != null && saveCode != null) {
                                 infoBot.setCode(saveCode);
+                                //TODO load code from file
                             }
                         }
                         /*if (cx>canvas.getWidth()-100 && cy>canvas.getHeight()-150 && cy<canvas.getHeight()-75){
@@ -325,10 +331,10 @@ public class DrawThread extends Thread{
                         if (cx > canvas.getWidth() - 150 && cy > canvas.getHeight() - 150) {
                             settings_menu = !settings_menu;
                         }
-                        if (cx > canvas.getWidth()-100 && cy < 100){
+                        if (pause.isClicked(cx,cy)){
                             stopGame= (byte) (stopGame==0?1:0);
                         }
-                        if (cx > canvas.getWidth()-80 && cy < 180 && cy > 100){
+                        if (boost.isClicked(cx,cy)){
                             stopGame= (byte) (stopGame==1 || stopGame==0? 2:1);
                         }
                     }
@@ -343,9 +349,13 @@ public class DrawThread extends Thread{
 
                     if (!f && f2) infoBot=null;
 
+
                     canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
-                    canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
-                    canvas.drawRect(220,canvas.getHeight()-125, 400,canvas.getHeight()-25,b2);
+                    //canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
+                    //canvas.drawRect(220,canvas.getHeight()-125, 400,canvas.getHeight()-25,b2);
+                    save.draw(canvas, 0xFF00CC00);
+                    load.draw(canvas,0xFF7F00FF);
+
 
                     canvas.drawText("Save",50,canvas.getHeight()-80,p2);
                     canvas.drawText("Load",250,canvas.getHeight()-80,p2);
@@ -362,9 +372,10 @@ public class DrawThread extends Thread{
                     canvas.drawBitmap(sett,canvas.getWidth()-150,canvas.getHeight()-150,p);
 
 
-
-                    canvas.drawCircle(canvas.getWidth()-50,50, 50 ,stopGame==0?onB:offB);
-                    canvas.drawCircle(canvas.getWidth()-40,140, 40 ,stopGame==2?onB:offB);
+                    pause.draw(canvas,0xFF555555);
+                    boost.draw(canvas,0xFF555555);
+                    //canvas.drawCircle(canvas.getWidth()-50,50, 50 ,stopGame==0?onB:offB);
+                    ///canvas.drawCircle(canvas.getWidth()-40,140, 40 ,stopGame==2?onB:offB);
                     //canvas.drawRect(canvas.getWidth()-225,canvas.getHeight()-100,canvas.getWidth()-150,canvas.getHeight()-50,stopGame==1?onB:offB);
                     //canvas.drawRect(canvas.getWidth()-225,canvas.getHeight()-50,canvas.getWidth()-150,canvas.getHeight(),stopGame==2?onB:offB);
 
@@ -407,7 +418,8 @@ public class DrawThread extends Thread{
             }
 //========================================отрисовка===========================================
             try {
-                Thread.sleep(1000);
+                if (stopGame==2) Thread.sleep(100);
+                else Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.err.println("BLYAT!");
