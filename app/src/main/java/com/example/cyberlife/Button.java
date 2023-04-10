@@ -9,12 +9,14 @@ public class Button {
     private boolean circle;
     private int centerX,centerY;
     private int radius;
+    private Paint p = new Paint();
 
     public Button(int x, int y, int dx, int dy) {
         this.x = x;
         this.y = y;
         this.dx = dx;
         this.dy = dy;
+
         circle=false;
     }
 
@@ -22,11 +24,11 @@ public class Button {
         this.centerX = centerX;
         this.centerY = centerY;
         this.radius = radius;
+
         circle=true;
     }
 
-    public void draw(Canvas canvas, int color){
-        Paint p = new Paint();
+    public void draw(Canvas canvas,int color){
         p.setColor(color);
         if (circle){
             canvas.drawCircle(centerX,centerY,radius,p);
@@ -47,5 +49,13 @@ public class Button {
             }
         }
         return false;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }

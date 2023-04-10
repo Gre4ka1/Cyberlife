@@ -103,12 +103,11 @@ public class DrawThread extends Thread{
     }
 
     public static void click(int x,int y){
-        System.out.println(x+" "+y);
-        //System.out.println(x+" "+y);
         clickF=true;
         cx=x;
         cy=y;
     }
+
 
     public DrawThread(Context context, SurfaceHolder surfaceHolder) {
         this.surfaceHolder = surfaceHolder;
@@ -117,6 +116,28 @@ public class DrawThread extends Thread{
     public void requestStop() {
         running = false;
     }
+
+    public ArrayList<Bot> createBots(){
+        ArrayList<Bot> bots=new ArrayList<>();
+        for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
+            int newx = (int)(new Random().nextInt(500) /50)*50;
+            int newy = (int)(new Random().nextInt(1000)/50)*50;
+            boolean f3=true;
+            for (Bot j:bots) {
+                if(j.getX()==newx && j.getY()==newy){
+                    f3=false;
+                    i--;
+
+                }
+            }
+            if (f3){
+                bots.add(new Bot(newx,newy));
+            }
+
+        }
+        return bots;
+    }
+
 
     public static Bitmap drawableToBitmap (Drawable drawable) {
 
@@ -134,12 +155,12 @@ public class DrawThread extends Thread{
     @Override
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
+        bots=createBots();
         bots.add(new Bot(500,500,new short[]{24,21,19,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
         bots.add(new Bot(0,0,new short[]{23,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
+
         //bots.add(bots.get(0).dublicate());
-        for (int i = 0; i < 10; i++) {
-            //Canvas canvas = surfaceHolder.lockCanvas();
-            //try{
+        /*for (int i = 0; i < 10; i++) {
                 int newx = (int)(new Random().nextInt(500) /50)*50;
                 int newy = (int)(new Random().nextInt(1000)/50)*50;
                 boolean f3=true;
@@ -153,11 +174,14 @@ public class DrawThread extends Thread{
                 if (f3){
                     bots.add(new Bot(newx,newy));
                 }
-            //} finally {
-            //    surfaceHolder.unlockCanvasAndPost(canvas);
-            //}
-        }
+
+        }*/
         //System.out.println(bots.get(0).code());
+
+
+
+
+
         while (running) {
             for (int i=0;i<bots.size();i++) {
                 if(stopGame!=0) {
@@ -258,10 +282,11 @@ public class DrawThread extends Thread{
                     }
                     boolean f=false;
                     boolean f2=false;
-                    Button pause = new Button(canvas.getWidth()-50, 50, 50);
-                    Button boost = new Button(canvas.getWidth()-40, 140, 40);
-                    Button save = new Button(20, canvas.getHeight()-125, 180,100);
-                    Button load = new Button(220, canvas.getHeight()-125, 180,100);
+                    PictureButton pause = new PictureButton(canvas.getWidth()-100, 0, 100,100,R.drawable.pause,context);
+                    PictureButton boost = new PictureButton(canvas.getWidth()-100, 100, 100,100,R.drawable.boost,context);
+                    PictureButton save = new PictureButton(20, canvas.getHeight()-125, 100,100,R.drawable.save,context);
+                    PictureButton load = new PictureButton(140, canvas.getHeight()-125, 100,100,R.drawable.load,context);
+                    PictureButton restart = new PictureButton(280,canvas.getHeight()-125, 100,100,R.drawable.restart,context);
 
                     if (clickF) {
                         //System.out.println(i+" 1234567890");
@@ -319,6 +344,13 @@ public class DrawThread extends Thread{
                         if (cx > 220 && cx < 400 && cy > canvas.getHeight() - 125 && cy < canvas.getHeight() - 25) {// Load
                             if (infoBot != null && saveCode != null) {
                                 infoBot.setCode(saveCode);
+                                /*runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MyDialogFragment dialog = new MyDialogFragment();
+                                        dialog.show(getFragmentManager(), "MyDialogFragment");
+                                    }
+                                });*/
                                 //TODO load code from file
                             }
                         }
@@ -337,6 +369,9 @@ public class DrawThread extends Thread{
                         if (boost.isClicked(cx,cy)){
                             stopGame= (byte) (stopGame==1 || stopGame==0? 2:1);
                         }
+                        if (restart.isClicked(cx,cy)){
+                            bots=createBots();
+                        }
                     }
 
                     for (Bot i :bots) {
@@ -353,12 +388,14 @@ public class DrawThread extends Thread{
                     canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     //canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
                     //canvas.drawRect(220,canvas.getHeight()-125, 400,canvas.getHeight()-25,b2);
-                    save.draw(canvas, 0xFF00CC00);
+                    save.draw(canvas,0xFF00CC00);
                     load.draw(canvas,0xFF7F00FF);
+                    restart.draw(canvas,0xFFFFFFFF);
+                    pause.draw(canvas,stopGame==0?0xAAFF8500:0xAAA0A6AB);
+                    boost.draw(canvas,stopGame==2?0xAAFF8500:0xAAA0A6AB);
 
-
-                    canvas.drawText("Save",50,canvas.getHeight()-80,p2);
-                    canvas.drawText("Load",250,canvas.getHeight()-80,p2);
+                    //canvas.drawText("Save",50,canvas.getHeight()-80,p2);
+                    //canvas.drawText("Load",250,canvas.getHeight()-80,p2);
 
                     /*canvas.drawRect(canvas.getWidth()-100,canvas.getHeight()-150,canvas.getWidth(),canvas.getHeight()-75,b3);
                     canvas.drawRect(canvas.getWidth()-100,canvas.getHeight()-75,canvas.getWidth(),canvas.getHeight(),b4);
@@ -372,12 +409,6 @@ public class DrawThread extends Thread{
                     canvas.drawBitmap(sett,canvas.getWidth()-150,canvas.getHeight()-150,p);
 
 
-                    pause.draw(canvas,0xFF555555);
-                    boost.draw(canvas,0xFF555555);
-                    //canvas.drawCircle(canvas.getWidth()-50,50, 50 ,stopGame==0?onB:offB);
-                    ///canvas.drawCircle(canvas.getWidth()-40,140, 40 ,stopGame==2?onB:offB);
-                    //canvas.drawRect(canvas.getWidth()-225,canvas.getHeight()-100,canvas.getWidth()-150,canvas.getHeight()-50,stopGame==1?onB:offB);
-                    //canvas.drawRect(canvas.getWidth()-225,canvas.getHeight()-50,canvas.getWidth()-150,canvas.getHeight(),stopGame==2?onB:offB);
 
 
                     /*String text="";
