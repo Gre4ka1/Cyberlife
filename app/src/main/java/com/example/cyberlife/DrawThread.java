@@ -3,7 +3,7 @@ import static android.content.Context.MODE_APPEND;
 import static android.content.Context.MODE_PRIVATE;
 
 
-
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -19,6 +19,8 @@ import android.view.SurfaceHolder;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import androidx.fragment.app.DialogFragment;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,7 +42,6 @@ public class DrawThread extends Thread{
     private static boolean settings_menu = false;
     private static int cy,cx;
     private volatile boolean running = true;//флаг для остановки потока
-
 
     private Bot infoBot=null;
     private short[] saveCode = new short[16];
@@ -156,7 +157,7 @@ public class DrawThread extends Thread{
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
         bots=createBots();
-        bots.add(new Bot(500,500,new short[]{24,21,19,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
+        bots.add(new Bot(500,500,new short[]{23,2,17,24,21,19,9,6,3,6,4,6,9,6,12,12},new Color()));
         bots.add(new Bot(0,0,new short[]{23,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
 
         //bots.add(bots.get(0).dublicate());
@@ -344,14 +345,14 @@ public class DrawThread extends Thread{
                         if (cx > 220 && cx < 400 && cy > canvas.getHeight() - 125 && cy < canvas.getHeight() - 25) {// Load
                             if (infoBot != null && saveCode != null) {
                                 infoBot.setCode(saveCode);
-                                /*runOnUiThread(new Runnable() {
+                                /*activity.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        MyDialogFragment dialog = new MyDialogFragment();
-                                        dialog.show(getFragmentManager(), "MyDialogFragment");
+                                        DialogFragment dialog = new DialogFragment();
+                                        dialog.show(activity.getFragmentManager(),"byvbuv");
                                     }
-                                });*/
-                                //TODO load code from file
+                                });
+                                //TODO load code from file*/
                             }
                         }
                         /*if (cx>canvas.getWidth()-100 && cy>canvas.getHeight()-150 && cy<canvas.getHeight()-75){

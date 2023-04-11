@@ -89,7 +89,7 @@ public class Bot{
         energy-=50;
         short[] newCode= new short[16];
         for (int i=0;i<16;i++) {
-            int a = new Random().nextInt(10);
+            int a = new Random().nextInt(150);
             if (a!=1) {
                 newCode[i] = code[i];
             }
@@ -154,7 +154,7 @@ public class Bot{
         }
     }
     public short energy(){
-        if (energy>=50) return (short) (1);
+        if (energy>50) return (short) (1);
         return (short) (2);
     }
     public short look( ArrayList<Bot> bots){

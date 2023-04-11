@@ -1,7 +1,9 @@
 package com.example.cyberlife;
 
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -10,15 +12,30 @@ import androidx.annotation.NonNull;
 
 public class DrawView extends SurfaceView implements SurfaceHolder.Callback {
     public int cx,cy;
-    public volatile Context context;
-    public void getContext1(){
-
-    }
 
     private DrawThread drawThread;
 
     public DrawView(Context context) {
         super(context);
+        init();
+    }
+
+    public DrawView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public DrawView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    public DrawView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        init();
+    }
+
+    private void init() {
         getHolder().addCallback(this);
     }
 

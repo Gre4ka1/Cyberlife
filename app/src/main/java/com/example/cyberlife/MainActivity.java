@@ -9,8 +9,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DrawView dv = new DrawView(this);
-        dv.setOnClickListener(v -> {DrawThread.click(dv.getCx(),dv.getCy());});
-        setContentView(dv);
+        setContentView(R.layout.activity_main);
+        findViewById(R.id.gameView).setOnClickListener(view -> {
+            DrawView dv = (DrawView) view;
+            DrawThread.click(dv.getCx(),dv.getCy());
+        });
     }
 }
