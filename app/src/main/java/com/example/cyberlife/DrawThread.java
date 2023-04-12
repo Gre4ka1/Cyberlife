@@ -108,6 +108,12 @@ public class DrawThread extends Thread{
         cx=x;
         cy=y;
     }
+    public static void pause(){
+        stopGame = (byte) (stopGame==0?1:0);
+    }
+    public static void boost(){
+        stopGame = (byte) (stopGame==2?1:2);
+    }
 
 
     public DrawThread(Context context, SurfaceHolder surfaceHolder) {
@@ -158,7 +164,7 @@ public class DrawThread extends Thread{
         ArrayList<Bot> bots=new ArrayList<>();
         bots=createBots();
         bots.add(new Bot(500,500,new short[]{23,2,17,24,21,19,9,6,3,6,4,6,9,6,12,12},new Color()));
-        bots.add(new Bot(0,0,new short[]{23,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
+        bots.add(new Bot(0,0,new short[]{16,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
 
         //bots.add(bots.get(0).dublicate());
         /*for (int i = 0; i < 10; i++) {
@@ -206,39 +212,33 @@ public class DrawThread extends Thread{
                     Bot b = bots.get(bb);
 
                     for (short count = 0; count < b.getCode().length; ) {
-                        System.out.println(b.getCode()[count]);
-                        //switch (b.getCode()[count]){
-                        if (b.getCode()[count] == 17) {//case(17): {   //                      ГЕНЕРАЦИЯ
+
+                        if (b.getCode()[count] == 17) {   //                      ГЕНЕРАЦИЯ
                             b.generate();
                             count++;
                             break;
-                        } else if (b.getCode()[count] == 18) {//case(18): {   //                       ДВИЖЕНИЕ
+                        } else if (b.getCode()[count] == 18) {//                       ДВИЖЕНИЕ
                             b.move(canvas);
                             count++;
                             break;
-                        } else if (b.getCode()[count] == 19) {//case(19): {   //
-                            //if (b.getEnergy()>=50) {
-                            boolean f4 = true;
-                            for (Bot h : bots) {
-                                if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0] < 0 || b.getTarget()[0] >= canvas.getWidth() || b.getTarget()[1] < 0 || b.getTarget()[1] >= canvas.getHeight() - 150) {
-                                    f4 = false;
-                                    break;
+                        } else if (b.getCode()[count] == 19) {//
+                            if (b.getEnergy()>=50) {
+                                boolean f4 = true;
+                                for (Bot h : bots) {
+                                    if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0] < 0 || b.getTarget()[0] >= canvas.getWidth() || b.getTarget()[1] < 0 || b.getTarget()[1] >= canvas.getHeight() - 150) {
+                                        f4 = false;
+                                        break;
+                                    }
                                 }
-                            }
-                            if (f4) {
-                                bots.add(b.dublicate());
-                                k++;
-                                //System.out.println(b.getX() + " " + b.getY());
-                                count++;
-                                break;
+                                if (f4) {
+                                    bots.add(b.dublicate());
+                                    k++;
+                                    //System.out.println(b.getX() + " " + b.getY());
+                                    count++;
+                                    break;
+                                } else count++;
                             } else count++;
-                            //}
-                        } else if (b.getCode()[count] == 20) {//case(20): {   //                      ПОЕДАНИЕ
-                        /*System.out.println("=====================");
-                        System.out.println(b.getX()+" "+b.getY());
-                        System.out.println(b.getDx()+" "+b.getDy());
-                        System.out.println(b.getCurrent()[0]+" "+b.getCurrent()[1]);
-                        System.out.println("=====================");*/
+                        } else if (b.getCode()[count] == 20) {//                      ПОЕДАНИЕ
                             for (int h = 0; h < bots.size(); h++) {
                                 if (bots.get(h).getX() == b.getTarget()[0] || bots.get(h).getY() == b.getTarget()[1]) {
                                     System.out.println("SUCCESS!");
@@ -248,20 +248,18 @@ public class DrawThread extends Thread{
                             }
                             count++;
                             break;
-                        } else if (b.getCode()[count] == 21) {//case(21): {  //                       ПОВОРОТ ВЛЕВО
+                        } else if (b.getCode()[count] == 21) {//                 ПОВОРОТ ВЛЕВО
                             b.rotateL();
                             count++;
-                            break;
-                        } else if (b.getCode()[count] == 22) {//case(22): {   //                      ПОВОРОТ ВПРАВО
+
+                        } else if (b.getCode()[count] == 22) {//                 ПОВОРОТ ВПРАВО
                             b.rotateR();
                             count++;
-                            break;
-                        } else if (b.getCode()[count] == 23) {//case(23): {   //                      ПРОВЕРКА ЭНЕРГИИ
+
+                        } else if (b.getCode()[count] == 23) {//                 ПРОВЕРКА ЭНЕРГИИ
                             count += b.energy();
-                            //break;
-                        } else if (b.getCode()[count] == 24) {//case(24):    //                      ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
+                        } else if (b.getCode()[count] == 24) {//                 ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
                             count += b.look(bots);
-                            //break;
                         } else {//default: {
                             //System.out.println("BRUH " + b.getCode()[count]);
                             if (b.getCode()[count] != 0) {
@@ -283,12 +281,12 @@ public class DrawThread extends Thread{
                     }
                     boolean f=false;
                     boolean f2=false;
-                    PictureButton pause = new PictureButton(canvas.getWidth()-100, 0, 100,100,R.drawable.pause,context);
+                    /*PictureButton pause = new PictureButton(canvas.getWidth()-100, 0, 100,100,R.drawable.pause,context);
                     PictureButton boost = new PictureButton(canvas.getWidth()-100, 100, 100,100,R.drawable.boost,context);
                     PictureButton save = new PictureButton(20, canvas.getHeight()-125, 100,100,R.drawable.save,context);
                     PictureButton load = new PictureButton(140, canvas.getHeight()-125, 100,100,R.drawable.load,context);
                     PictureButton restart = new PictureButton(280,canvas.getHeight()-125, 100,100,R.drawable.restart,context);
-
+*/
                     if (clickF) {
                         //System.out.println(i+" 1234567890");
                         clickF = false;
@@ -305,8 +303,8 @@ public class DrawThread extends Thread{
                         }
                         //-------------------------------
 
-                        //------------проверка на нажатие кнопок------------------
-                        if (cx > 20 && cx < 200 && cy > canvas.getHeight() - 125 && cy < canvas.getHeight() - 25) {// SAVE
+
+                        /*if (cx > 20 && cx < 200 && cy > canvas.getHeight() - 125 && cy < canvas.getHeight() - 25) {// SAVE
                             if (infoBot != null) {
                                 saveCode = infoBot.getCode();
 
@@ -352,15 +350,10 @@ public class DrawThread extends Thread{
                                         dialog.show(activity.getFragmentManager(),"byvbuv");
                                     }
                                 });
-                                //TODO load code from file*/
+                                //TODO load code from file
                             }
                         }
-                        /*if (cx>canvas.getWidth()-100 && cy>canvas.getHeight()-150 && cy<canvas.getHeight()-75){
-                            Bot.dEnergy+=5;
-                        }
-                        if (cx>canvas.getWidth()-100 && cy>canvas.getHeight()-75){
-                            if (Bot.dEnergy>0) Bot.dEnergy-=5;
-                        }*/
+
                         if (cx > canvas.getWidth() - 150 && cy > canvas.getHeight() - 150) {
                             settings_menu = !settings_menu;
                         }
@@ -372,7 +365,7 @@ public class DrawThread extends Thread{
                         }
                         if (restart.isClicked(cx,cy)){
                             bots=createBots();
-                        }
+                        }*/
                     }
 
                     for (Bot i :bots) {
@@ -389,11 +382,11 @@ public class DrawThread extends Thread{
                     canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     //canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
                     //canvas.drawRect(220,canvas.getHeight()-125, 400,canvas.getHeight()-25,b2);
-                    save.draw(canvas,0xFF00CC00);
+                    /*save.draw(canvas,0xFF00CC00);
                     load.draw(canvas,0xFF7F00FF);
                     restart.draw(canvas,0xFFFFFFFF);
                     pause.draw(canvas,stopGame==0?0xAAFF8500:0xAAA0A6AB);
-                    boost.draw(canvas,stopGame==2?0xAAFF8500:0xAAA0A6AB);
+                    boost.draw(canvas,stopGame==2?0xAAFF8500:0xAAA0A6AB);*/
 
                     //canvas.drawText("Save",50,canvas.getHeight()-80,p2);
                     //canvas.drawText("Load",250,canvas.getHeight()-80,p2);
@@ -405,10 +398,10 @@ public class DrawThread extends Thread{
                     canvas.drawText(Bot.dEnergy+"",canvas.getWidth()-60,canvas.getHeight()-66,p3);*/
 
                     //canvas.drawRect(canvas.getWidth()-150,canvas.getHeight()-150,canvas.getWidth(),canvas.getHeight(),settingP);Drawable sett =
-                    Bitmap sett = drawableToBitmap(context.getResources().getDrawable(R.drawable.setting));
+                    /*Bitmap sett = drawableToBitmap(context.getResources().getDrawable(R.drawable.setting));
                     sett = Bitmap.createScaledBitmap(sett, 150, 150,true);
                     canvas.drawBitmap(sett,canvas.getWidth()-150,canvas.getHeight()-150,p);
-
+*/
 
 
 
@@ -422,7 +415,7 @@ public class DrawThread extends Thread{
                     }*/
 
                     // меню настроек
-                    if (settings_menu){
+                    /*if (settings_menu){
                         canvas.drawRect(canvas.getWidth()-400,canvas.getHeight()-650, canvas.getWidth(),canvas.getHeight()-150,background2);
                         canvas.drawText("Sun",canvas.getWidth()-390,canvas.getHeight()-620,p3);
                         canvas.drawLine(canvas.getWidth()-250,canvas.getHeight()-630,canvas.getWidth()-50,canvas.getHeight()-630,p2);
@@ -430,7 +423,7 @@ public class DrawThread extends Thread{
                         canvas.drawLine(canvas.getWidth()-250,canvas.getHeight()-590,canvas.getWidth()-50,canvas.getHeight()-590,p2);
                         canvas.drawText("Start energy",canvas.getWidth()-390,canvas.getHeight()-540,p3);
                         canvas.drawLine(canvas.getWidth()-250,canvas.getHeight()-550,canvas.getWidth()-50,canvas.getHeight()-550,p2);
-                    }
+                    }*/
 
                     /*for (int i = 0; i<saveCode.length;i++) {
                         text+=" "+saveCode[i];
