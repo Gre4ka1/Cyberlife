@@ -42,6 +42,7 @@ public class DrawThread extends Thread{
     private static boolean settings_menu = false;
     private static int cy,cx;
     private volatile boolean running = true;//флаг для остановки потока
+    private CodeRepositiry repositiry = CodeRepositiry.getInstance();
 
     private Bot infoBot=null;
     private short[] saveCode = new short[16];
