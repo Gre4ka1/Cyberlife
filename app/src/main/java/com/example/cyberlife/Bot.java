@@ -12,22 +12,24 @@ import java.util.Random;
 public class Bot{
     private int x,y;
     private int dx,dy;
+    private final int size=50;
     private short[] code;
-    private Color color;
+    private int color;
     private short energy;
 
     private Paint p;
     public static int dEnergy=25;
+    public static int mutation=10;  // процент на изменение каждой цифры кода(в тысячных)
 
 
-    public Bot(int x, int y, short[] code, Color color) {
+    public Bot(int x, int y, short[] code, int color) {
         this.x = x;
         this.y = y;
         this.code = code;
         this.color = color;
-        this.dx= (new Random().nextInt(2)-1)*50;
-        this.dy= (new Random().nextInt(2)-1)*50;
-        if (dx==0 && dy==0) dx = 50;
+        this.dx= (new Random().nextInt(2)-1)*size;
+        this.dy= (new Random().nextInt(2)-1)*size;
+        if (dx==0 && dy==0) dx = size;
         this.energy=40;
     }
 
@@ -37,11 +39,11 @@ public class Bot{
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.color = Color.valueOf((int)(Math.random() * 0x1000000));
         }*/
-        this.color=new Color();
+        this.color=0xFFFF0000;
 
-        this.dx= (new Random().nextInt(2)-1)*50;
-        this.dy= (new Random().nextInt(2)-1)*50;
-        if (dx==0 && dy==0) dx = 50;
+        this.dx= (new Random().nextInt(2)-1)*size;
+        this.dy= (new Random().nextInt(2)-1)*size;
+        if (dx==0 && dy==0) dx = size;
         this.energy=50;
         this.code= new short[16];
         for (int i = 0; i < code.length; i++) {
@@ -51,9 +53,16 @@ public class Bot{
 
     public void draw(Canvas canvas, Paint paint,Paint p){
 
-        canvas.drawRect(x,y, (x+50),(y+50),paint);
+        canvas.drawRect(x,y, (x+size),(y+size),paint);
         int xx=dx<0?x:dx==0?x+22:x+45,yy=dy<0?y:dy==0?y+22:y+45;
         canvas.drawRect(xx,yy, (xx+5),(yy+5),p);
+    }
+
+    public boolean clickCheck(int cx, int cy){
+        if (cx>x && cx<x+size && cy>y && cy<y+size){
+            return true;
+        }
+        return false;
     }
     public void drawInfo(Canvas canvas){
         Paint text = new Paint();
@@ -66,7 +75,7 @@ public class Bot{
             for (int i = j*4; i < (j+1)*4; i++) {
                 cod=cod+" "+(code[i]<10?"  "+code[i]:code[i]);
             }
-            canvas.drawText(cod,x+25,y+25+j*20,text);
+            canvas.drawText(cod,x+(int)(size/2),y+(int)(size/2)+j*20,text);
         }
 
     }
@@ -74,7 +83,7 @@ public class Bot{
     public void move(Canvas canvas){
         //System.out.println(x+" "+y);
         if(getTarget()[0]>=canvas.getWidth() || getTarget()[0]<0) dx=dx*-1;
-        if(getTarget()[1]>=canvas.getHeight()-150 || getTarget()[1]<0) dy=dy*-1;
+        if(getTarget()[1]>=canvas.getHeight() || getTarget()[1]<0) dy=dy*-1;
         x=x+dx;
         y=y+dy;
         energy-=10;
@@ -85,17 +94,17 @@ public class Bot{
         energy+=dEnergy;
         if (energy>100) energy=100;
     }
-    public Bot dublicate(){
+    public Bot dublicate(){//TODO изменение цвета в связи с изменением кода
         energy-=50;
         short[] newCode= new short[16];
         for (int i=0;i<16;i++) {
-            int a = new Random().nextInt(150);
-            if (a!=1) {
+            int a = new Random().nextInt(1000);
+            if (a>=mutation) {
                 newCode[i] = code[i];
             }
             else newCode[i] = (short) (new Random().nextInt(32));
         }
-        return new Bot(x+dx,y+dy,newCode,new Color());
+        return new Bot(x+dx,y+dy,newCode,color);
     }
     public void eat(Bot enemy, ArrayList<Bot> bots){
         bots.remove(enemy);
@@ -105,51 +114,51 @@ public class Bot{
     public void rotateL(){
         //System.out.println(dx+" "+dy);
         if (energy>=5) {
-            if (dx == 50 && dy == -50) {
+            if (dx == size && dy == -1*size) {
                 dx = 0;
-                dy = -50;
+                dy = -1*size;
             }
-            else if (dx == 0 && dy == -50) {
-                dx = -50;
-                dy = -50;
+            else if (dx == 0 && dy == -1*size) {
+                dx = -1*size;
+                dy = -1*size;
             }
-            else if (dx == -50 && dy == -50) {
-                dx = -50;
+            else if (dx == -1*size && dy == -1*size) {
+                dx = -1*size;
                 dy = 0;
             }
-            else if (dx == -50 && dy == 0) {
-                dx = -50;
-                dy = 50;
+            else if (dx == -1*size && dy == 0) {
+                dx = -1*size;
+                dy = size;
             }
-            else if (dx == -50 && dy == 50) {
+            else if (dx == -1*size && dy == size) {
                 dx = 0;
-                dy = 50;
+                dy = size;
             }
-            else if (dx == 0 && dy == 50) {
-                dx = 50;
-                dy = 50;
+            else if (dx == 0 && dy == size) {
+                dx = size;
+                dy = size;
             }
-            else if (dx == 50 && dy == 50) {
-                dx = 50;
+            else if (dx == size && dy == size) {
+                dx = size;
                 dy = 0;
             }
-            else if (dx == 50 && dy == 0) {
-                dx = 50;
-                dy = -50;
+            else if (dx == size && dy == 0) {
+                dx = size;
+                dy = -1*size;
             }
             energy-=5;
         }
     }
     public void rotateR(){
         if (energy>=5){
-            if (dx==50 && dy ==-50){ dx=50; dy=0;}
-            else if (dx==50 && dy ==0) {dx=50; dy=50;}
-            else if (dx==50 && dy ==50) {dx=0; dy=50;}
-            else if (dx==0 && dy ==50) {dx=-50; dy=50;}
-            else if (dx==-50 && dy ==50) {dx=-50; dy=0;}
-            else if (dx==-50 && dy ==0) {dx=-50; dy=-50;}
-            else if (dx==-50 && dy ==-50) {dx=0; dy=-50;}
-            else if (dx==0 && dy ==-50) {dx=50; dy=-50;}
+            if (dx==size && dy ==-1*size){ dx=size; dy=0;}
+            else if (dx==size && dy ==0) {dx=size; dy=size;}
+            else if (dx==size && dy ==size) {dx=0; dy=size;}
+            else if (dx==0 && dy ==size) {dx=-1*size; dy=size;}
+            else if (dx==-1*size && dy ==size) {dx=-1*size; dy=0;}
+            else if (dx==-1*size && dy ==0) {dx=-1*size; dy=-1*size;}
+            else if (dx==-1*size && dy ==-1*size) {dx=0; dy=-1*size;}
+            else if (dx==0 && dy ==-1*size) {dx=size; dy=-1*size;}
             energy-=5;
         }
     }
@@ -193,11 +202,11 @@ public class Bot{
         this.code = code;
     }
 
-    public Color getColor() {
+    public int getColor() {
         return color;
     }
 
-    public void setColor(Color color) {
+    public void setColor(int color) {
         this.color = color;
     }
 

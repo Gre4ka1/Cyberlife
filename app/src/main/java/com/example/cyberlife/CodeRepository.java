@@ -1,10 +1,10 @@
 package com.example.cyberlife;
 
-public class CodeRepositiry {
-    private static CodeRepositiry instance;
+public class CodeRepository {
+    private static CodeRepository instance;
     private short[] code;
 
-    private CodeRepositiry() {
+    private CodeRepository() {
     }
 
     public short[] getCode() {
@@ -15,9 +15,9 @@ public class CodeRepositiry {
         // TODO: release me
     }
 
-    public static CodeRepositiry getInstance() {
+    public static CodeRepository getInstance() {
         if (instance == null) {
-            instance = new CodeRepositiry();
+            instance = new CodeRepository();
         }
 
         return instance;

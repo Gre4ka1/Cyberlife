@@ -1,33 +1,16 @@
 package com.example.cyberlife;
-import static android.content.Context.MODE_APPEND;
-import static android.content.Context.MODE_PRIVATE;
 
 
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Picture;
-import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.SurfaceHolder;
-import android.widget.TextView;
-import android.widget.Toast;
 
 
-import androidx.fragment.app.DialogFragment;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -37,12 +20,11 @@ public class DrawThread extends Thread{
 
     private final SurfaceHolder surfaceHolder;
 
-    private static boolean clickF=false;
     private static byte stopGame=1;
     private static boolean settings_menu = false;
     private static int cy,cx;
     private volatile boolean running = true;//флаг для остановки потока
-    private CodeRepositiry repositiry = CodeRepositiry.getInstance();
+    private CodeRepository repositiry = CodeRepository.getInstance();
 
     private Bot infoBot=null;
     private short[] saveCode = new short[16];
@@ -104,11 +86,11 @@ public class DrawThread extends Thread{
         onB.setColor(0xAAFF8500);
     }
 
-    public static void click(int x,int y){
+    /*public static void click(int x,int y){
         clickF=true;
         cx=x;
         cy=y;
-    }
+    }*/
     public static void pause(){
         stopGame = (byte) (stopGame==0?1:0);
     }
@@ -130,15 +112,15 @@ public class DrawThread extends Thread{
         for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
             int newx = (int)(new Random().nextInt(500) /50)*50;
             int newy = (int)(new Random().nextInt(1000)/50)*50;
-            boolean f3=true;
-            for (Bot j:bots) {
-                if(j.getX()==newx && j.getY()==newy){
-                    f3=false;
-                    i--;
 
+            boolean f=true;
+            for (Bot j:bots) {
+                if(j.clickCheck(newx,newy)){
+                    f=false;
+                    i--;
                 }
             }
-            if (f3){
+            if (f){
                 bots.add(new Bot(newx,newy));
             }
 
@@ -164,8 +146,8 @@ public class DrawThread extends Thread{
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
         bots=createBots();
-        bots.add(new Bot(500,500,new short[]{23,2,17,24,21,19,9,6,3,6,4,6,9,6,12,12},new Color()));
-        bots.add(new Bot(0,0,new short[]{16,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},new Color()));
+        bots.add(new Bot(500,500,new short[]{23,2,17,24,21,19,9,6,3,6,4,6,9,6,12,12},0xFFFF0000));
+        bots.add(new Bot(0,0,new short[]{16,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},0xFFFF00FF));
 
         //bots.add(bots.get(0).dublicate());
         /*for (int i = 0; i < 10; i++) {
@@ -242,7 +224,7 @@ public class DrawThread extends Thread{
                         } else if (b.getCode()[count] == 20) {//                      ПОЕДАНИЕ
                             for (int h = 0; h < bots.size(); h++) {
                                 if (bots.get(h).getX() == b.getTarget()[0] || bots.get(h).getY() == b.getTarget()[1]) {
-                                    System.out.println("SUCCESS!");
+                                    //System.out.println("SUCCESS!");
                                     b.eat(bots.get(h), bots);
                                     break;
                                 }
@@ -280,29 +262,28 @@ public class DrawThread extends Thread{
                     for (Bot i:bots) {
                         i.draw(canvas,paint,p);
                     }
-                    boolean f=false;
-                    boolean f2=false;
+
+                    boolean notEmptyFlag=false;
                     /*PictureButton pause = new PictureButton(canvas.getWidth()-100, 0, 100,100,R.drawable.pause,context);
                     PictureButton boost = new PictureButton(canvas.getWidth()-100, 100, 100,100,R.drawable.boost,context);
                     PictureButton save = new PictureButton(20, canvas.getHeight()-125, 100,100,R.drawable.save,context);
                     PictureButton load = new PictureButton(140, canvas.getHeight()-125, 100,100,R.drawable.load,context);
                     PictureButton restart = new PictureButton(280,canvas.getHeight()-125, 100,100,R.drawable.restart,context);
 */
-                    if (clickF) {
-                        //System.out.println(i+" 1234567890");
-                        clickF = false;
-                        f2 = true;
+                    if (ClickRepository.getClickX()!=null) {
+                        cx=ClickRepository.getClickX();
+                        cy=ClickRepository.getClickY();
+                        ClickRepository.setClickX(null);
+                        ClickRepository.setClickX(null);
+
                         //----------проверка на выделение бота ------------
                         for (Bot i : bots) {
-                            if (cx > i.getX() && cx < i.getX() + 50 && cy > i.getY() && cy < i.getY() + 50) {
+                            if (i.clickCheck(cx,cy)) {
                                 infoBot = i;
-                                f = true;
-                                System.out.println(i);
+                                notEmptyFlag = true;
                             }
-                            System.out.println(infoBot);
-                            System.out.println(cx + " / " + cy);
                         }
-                        //-------------------------------
+                        if (!notEmptyFlag) infoBot=null;
 
 
                         /*if (cx > 20 && cx < 200 && cy > canvas.getHeight() - 125 && cy < canvas.getHeight() - 25) {// SAVE
@@ -351,7 +332,7 @@ public class DrawThread extends Thread{
                                         dialog.show(activity.getFragmentManager(),"byvbuv");
                                     }
                                 });
-                                //TODO load code from file
+
                             }
                         }
 
@@ -375,10 +356,6 @@ public class DrawThread extends Thread{
                             i.drawInfo(canvas);
                         }
                     }
-
-
-                    if (!f && f2) infoBot=null;
-
 
                     canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     //canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
