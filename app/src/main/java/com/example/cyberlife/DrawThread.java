@@ -107,7 +107,7 @@ public class DrawThread extends Thread{
         running = false;
     }
 
-    public ArrayList<Bot> createBots(){
+    public static ArrayList<Bot> createBots(){
         ArrayList<Bot> bots=new ArrayList<>();
         for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
             int newx = (int)(new Random().nextInt(500) /50)*50;
@@ -185,6 +185,11 @@ public class DrawThread extends Thread{
                     }
                 }
 
+
+                if (ClickRepository.getInstance().getRestart()){
+                    bots=createBots();
+                }
+
             }
             
 
@@ -208,7 +213,7 @@ public class DrawThread extends Thread{
                             if (b.getEnergy()>=50) {
                                 boolean f4 = true;
                                 for (Bot h : bots) {
-                                    if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0] < 0 || b.getTarget()[0] >= canvas.getWidth() || b.getTarget()[1] < 0 || b.getTarget()[1] >= canvas.getHeight() - 150) {
+                                    if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0] < 0 || b.getTarget()[0] >= canvas.getWidth() || b.getTarget()[1] < 0 || b.getTarget()[1] >= canvas.getHeight()) {
                                         f4 = false;
                                         break;
                                     }
@@ -270,15 +275,16 @@ public class DrawThread extends Thread{
                     PictureButton load = new PictureButton(140, canvas.getHeight()-125, 100,100,R.drawable.load,context);
                     PictureButton restart = new PictureButton(280,canvas.getHeight()-125, 100,100,R.drawable.restart,context);
 */
-                    if (ClickRepository.getClickX()!=null) {
-                        cx=ClickRepository.getClickX();
-                        cy=ClickRepository.getClickY();
-                        ClickRepository.setClickX(null);
-                        ClickRepository.setClickX(null);
+                    if (ClickRepository.getInstance().getClickX()!=null) {
+                        cx=ClickRepository.getInstance().getClickX();
+                        cy=ClickRepository.getInstance().getClickY();
+                        ClickRepository.getInstance().setClickX(null);
+                        ClickRepository.getInstance().setClickX(null);
 
                         //----------проверка на выделение бота ------------
                         for (Bot i : bots) {
                             if (i.clickCheck(cx,cy)) {
+                                CodeRepository.getInstance().updateCode(i.getCode());
                                 infoBot = i;
                                 notEmptyFlag = true;
                             }
@@ -357,7 +363,7 @@ public class DrawThread extends Thread{
                         }
                     }
 
-                    canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
+                    //canvas.drawRect(0,canvas.getHeight()-150, canvas.getWidth(),canvas.getHeight(),background2);
                     //canvas.drawRect(20,canvas.getHeight()-125, 200,canvas.getHeight()-25,b1);
                     //canvas.drawRect(220,canvas.getHeight()-125, 400,canvas.getHeight()-25,b2);
                     /*save.draw(canvas,0xFF00CC00);

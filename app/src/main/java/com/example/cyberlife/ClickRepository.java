@@ -1,21 +1,41 @@
 package com.example.cyberlife;
 
 public class ClickRepository {
-    private static Integer clickX,clickY;
+    private static ClickRepository instance;
+    private Integer clickX,clickY;
+    private boolean restart;
 
-    public static Integer getClickX() {
+    public ClickRepository() {
+    }
+
+    public Integer getClickX() {
         return clickX;
     }
 
-    public static void setClickX(Integer clickX) {
-        ClickRepository.clickX = clickX;
+    public void setClickX(Integer clickX) {
+        this.clickX = clickX;
     }
 
-    public static Integer getClickY() {
+    public Integer getClickY() {
         return clickY;
     }
 
-    public static void setClickY(Integer clickY) {
-        ClickRepository.clickY = clickY;
+    public void setClickY(Integer clickY) {
+        this.clickY = clickY;
+    }
+
+    public boolean getRestart() {
+        return restart;
+    }
+
+    public void setRestart(boolean restart) {
+        this.restart = restart;
+    }
+
+    public static ClickRepository getInstance() {
+        if (instance == null) {
+            instance = new ClickRepository();
+        }
+        return instance;
     }
 }

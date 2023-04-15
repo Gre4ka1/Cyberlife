@@ -11,8 +11,8 @@ public class CodeRepository {
         return code;
     }
 
-    public void updateCode() {
-        // TODO: release me
+    public void updateCode(short[] code) {
+        this.code=code;
     }
 
     public static CodeRepository getInstance() {
