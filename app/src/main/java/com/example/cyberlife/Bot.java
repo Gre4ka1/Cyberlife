@@ -79,7 +79,11 @@ public class Bot{
         }
 
     }
-
+    public boolean minusEnergy(){
+        energy-=Math.round(dEnergy/4);
+        if (energy<=0) return true;
+        return false;
+    }
     public void move(Canvas canvas){
         //System.out.println(x+" "+y);
         if(getTarget()[0]>=canvas.getWidth() || getTarget()[0]<0) dx=dx*-1;
@@ -181,55 +185,42 @@ public class Bot{
     public int getDx() {
         return dx;
     }
-
     public void setDx(int dx) {
         this.dx = dx;
     }
-
     public int getDy() {
         return dy;
     }
-
     public void setDy(int dy) {
         this.dy = dy;
     }
-
     public short[] getCode() {
         return code;
     }
-
     public void setCode(short[] code) {
         this.code = code;
     }
-
     public int getColor() {
         return color;
     }
-
     public void setColor(int color) {
         this.color = color;
     }
-
     public short getEnergy() {
         return energy;
     }
-
     public void setEnergy(short energy) {
         this.energy = energy;
     }
-
     public int getX() {
         return x;
     }
-
     public int getY() {
         return y;
     }
-
     public int[] getTarget(){
         return new int[]{x+dx, y+dy};
     }
-
     @Override
     public String toString() {
         return "Bot{" +
