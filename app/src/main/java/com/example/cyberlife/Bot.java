@@ -5,6 +5,8 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Build;
 
+import androidx.annotation.ColorInt;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -17,9 +19,11 @@ public class Bot{
     private int color;
     private short energy;
 
-    private Paint p;
+    private Paint paint = new Paint();
+    private Paint p = new Paint();
     public static int dEnergy=25;
     public static int mutation=10;  // процент на изменение каждой цифры кода(в тысячных)
+
 
 
     public Bot(int x, int y, short[] code, int color) {
@@ -27,6 +31,7 @@ public class Bot{
         this.y = y;
         this.code = code;
         this.color = color;
+        /*paint.setColor(color);p.setColor(0xFFFFFFFF);*/
         this.dx= (new Random().nextInt(2)-1)*size;
         this.dy= (new Random().nextInt(2)-1)*size;
         if (dx==0 && dy==0) dx = size;
@@ -39,7 +44,14 @@ public class Bot{
         /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             this.color = Color.valueOf((int)(Math.random() * 0x1000000));
         }*/
-        this.color=0xFFFF0000;
+        this.color=Integer.parseInt(Integer.toHexString(1000));
+        System.out.println(this.color);
+        /*paint.setColor(color);
+        p.setColor(0xFFFFFFFF);*/
+
+
+
+
 
         this.dx= (new Random().nextInt(2)-1)*size;
         this.dy= (new Random().nextInt(2)-1)*size;
@@ -47,12 +59,13 @@ public class Bot{
         this.energy=50;
         this.code= new short[16];
         for (int i = 0; i < code.length; i++) {
-            code[i]=(short) new Random().nextInt(32);
+            code[i]=(short) new Random().nextInt(21);
         }
     }
 
-    public void draw(Canvas canvas, Paint paint,Paint p){
-
+    public void draw(Canvas canvas){
+        paint.setColor(color);
+        p.setColor(0xFFFFFFFF);
         canvas.drawRect(x,y, (x+size),(y+size),paint);
         int xx=dx<0?x:dx==0?x+22:x+45,yy=dy<0?y:dy==0?y+22:y+45;
         canvas.drawRect(xx,yy, (xx+5),(yy+5),p);
@@ -106,7 +119,7 @@ public class Bot{
             if (a>=mutation) {
                 newCode[i] = code[i];
             }
-            else newCode[i] = (short) (new Random().nextInt(32));
+            else newCode[i] = (short) (new Random().nextInt(21));
         }
         return new Bot(x+dx,y+dy,newCode,color);
     }

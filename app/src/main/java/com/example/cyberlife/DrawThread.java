@@ -106,7 +106,26 @@ public class DrawThread extends Thread{
     public void requestStop() {
         running = false;
     }
+    public static ArrayList<Bot> createBots(Canvas canvas){
+        ArrayList<Bot> bots=new ArrayList<>();
+        for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
+            int newx = (int)(new Random().nextInt(canvas.getWidth()) /50)*50;
+            int newy = (int)(new Random().nextInt(canvas.getHeight())/50)*50;
 
+            boolean f=true;
+            for (Bot j:bots) {
+                if(j.clickCheck(newx,newy)){
+                    f=false;
+                    i--;
+                }
+            }
+            if (f){
+                bots.add(new Bot(newx,newy));
+            }
+
+        }
+        return bots;
+    }
     public static ArrayList<Bot> createBots(){
         ArrayList<Bot> bots=new ArrayList<>();
         for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
@@ -146,8 +165,8 @@ public class DrawThread extends Thread{
     public void run() {
         ArrayList<Bot> bots=new ArrayList<>();
         bots=createBots();
-        bots.add(new Bot(500,500,new short[]{23,2,17,24,21,19,9,6,3,6,4,6,9,6,12,12},0xFFFF0000));
-        bots.add(new Bot(0,0,new short[]{16,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},0xFFFF00FF));
+        bots.add(new Bot(500,500,new short[]{19,2,13,20,17,15,9,6,3,6,4,6,9,6,12,12},0xFFFF0000));
+        bots.add(new Bot(0,0,new short[]{13,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},0xFFFF00FF));
 
         //bots.add(bots.get(0).dublicate());
         /*for (int i = 0; i < 10; i++) {
@@ -189,16 +208,12 @@ public class DrawThread extends Thread{
                     }
                 }
             }
-
+            Canvas canvas = surfaceHolder.lockCanvas();
             if (ClickRepository.getInstance().getRestart()){
-                bots=createBots();
+                bots=createBots(canvas);
                 ClickRepository.getInstance().setRestart(false);
             }
 
-
-            
-
-            Canvas canvas = surfaceHolder.lockCanvas();
             byte k=0;
             if (stopGame!=0) {
                 for (int bb = 0; bb < bots.size() - k; bb++) {  //TODO bot.runOnCode() ?
@@ -206,15 +221,15 @@ public class DrawThread extends Thread{
 
                     for (short count = 0; count < b.getCode().length; ) {
 
-                        if (b.getCode()[count] == 17) {   //                      ГЕНЕРАЦИЯ
+                        if (b.getCode()[count] == 13) {   //                      ГЕНЕРАЦИЯ
                             b.generate();
                             count++;
                             break;
-                        } else if (b.getCode()[count] == 18) {//                       ДВИЖЕНИЕ
+                        } else if (b.getCode()[count] == 14) {//                       ДВИЖЕНИЕ
                             b.move(canvas);
                             count++;
                             break;
-                        } else if (b.getCode()[count] == 19) {//
+                        } else if (b.getCode()[count] == 15) {//
                             if (b.getEnergy()>=50) {
                                 boolean f4 = true;
                                 for (Bot h : bots) {
@@ -231,7 +246,7 @@ public class DrawThread extends Thread{
                                     break;
                                 } else count++;
                             } else count++;
-                        } else if (b.getCode()[count] == 20) {//                      ПОЕДАНИЕ
+                        } else if (b.getCode()[count] == 16) {//                      ПОЕДАНИЕ
                             for (int h = 0; h < bots.size(); h++) {
                                 if (bots.get(h).getX() == b.getTarget()[0] || bots.get(h).getY() == b.getTarget()[1]) {
                                     //System.out.println("SUCCESS!");
@@ -241,17 +256,17 @@ public class DrawThread extends Thread{
                             }
                             count++;
                             break;
-                        } else if (b.getCode()[count] == 21) {//                 ПОВОРОТ ВЛЕВО
+                        } else if (b.getCode()[count] == 17) {//                 ПОВОРОТ ВЛЕВО
                             b.rotateL();
                             count++;
 
-                        } else if (b.getCode()[count] == 22) {//                 ПОВОРОТ ВПРАВО
+                        } else if (b.getCode()[count] == 18) {//                 ПОВОРОТ ВПРАВО
                             b.rotateR();
                             count++;
 
-                        } else if (b.getCode()[count] == 23) {//                 ПРОВЕРКА ЭНЕРГИИ
+                        } else if (b.getCode()[count] == 19) {//                 ПРОВЕРКА ЭНЕРГИИ
                             count += b.energy();
-                        } else if (b.getCode()[count] == 24) {//                 ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
+                        } else if (b.getCode()[count] == 20) {//                 ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
                             count += b.look(bots);
                         } else {//default: {
                             //System.out.println("BRUH " + b.getCode()[count]);
@@ -289,11 +304,9 @@ public class DrawThread extends Thread{
                     if (!notEmptyFlag) infoBot=null;
 
                     for (Bot i:bots) {
-                        i.draw(canvas,paint,p);
-                        if (i==infoBot){
-                            i.drawInfo(canvas);
-                        }
+                        i.draw(canvas);
                     }
+                    if (infoBot != null) infoBot.drawInfo(canvas);
 
 
                     /*PictureButton pause = new PictureButton(canvas.getWidth()-100, 0, 100,100,R.drawable.pause,context);
