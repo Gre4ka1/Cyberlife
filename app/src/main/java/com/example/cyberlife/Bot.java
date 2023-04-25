@@ -1,5 +1,6 @@
 package com.example.cyberlife;
 
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -31,23 +32,20 @@ public class Bot{
         this.y = y;
         this.code = code;
         this.color = color;
-        /*paint.setColor(color);p.setColor(0xFFFFFFFF);*/
         this.dx= (new Random().nextInt(2)-1)*size;
         this.dy= (new Random().nextInt(2)-1)*size;
         if (dx==0 && dy==0) dx = size;
         this.energy=40;
+        p.setColor(0xFFFFFFFF);
     }
 
     public Bot(int x, int y) {
         this.x = x;
         this.y = y;
-        /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            this.color = Color.valueOf((int)(Math.random() * 0x1000000));
-        }*/
-        this.color=Integer.parseInt(Integer.toHexString(1000));
-        System.out.println(this.color);
-        /*paint.setColor(color);
-        p.setColor(0xFFFFFFFF);*/
+        Random r=new Random();
+        int col=((r.nextInt(155)+100) << 24)+((r.nextInt(255)) << 16)+(r.nextInt(255) << 8)+r.nextInt(255);
+        this.color=col;
+        p.setColor(0xFFFFFFFF);
 
 
 
@@ -59,13 +57,12 @@ public class Bot{
         this.energy=50;
         this.code= new short[16];
         for (int i = 0; i < code.length; i++) {
-            code[i]=(short) new Random().nextInt(21);
+            code[i]= (short) ((short) new Random().nextInt(20)+1);
         }
     }
 
     public void draw(Canvas canvas){
         paint.setColor(color);
-        p.setColor(0xFFFFFFFF);
         canvas.drawRect(x,y, (x+size),(y+size),paint);
         int xx=dx<0?x:dx==0?x+22:x+45,yy=dy<0?y:dy==0?y+22:y+45;
         canvas.drawRect(xx,yy, (xx+5),(yy+5),p);
@@ -193,6 +190,15 @@ public class Bot{
         return (short) (2);
     }
 
+    /*public void runCode(){
+        for (short count = 0; count < code.length;) {
+            if (b.getCode()[count] == 13) {   //                      ГЕНЕРАЦИЯ
+                b.generate();
+                count++;
+                break;
+        }
+    }*/
+
 
 
     public int getDx() {
@@ -242,7 +248,7 @@ public class Bot{
                 ", energy=" + energy +
                 '}';
     }
-    public String code(){
+    public String printCode(){
         String text="";
         for (short t:code) {
             text+=" "+t;

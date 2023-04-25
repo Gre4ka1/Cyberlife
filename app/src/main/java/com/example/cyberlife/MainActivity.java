@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         binding.gameView.setOnTouchListener(this);
         System.out.println();
 
-
+        //TODO: autoGenerateButton
         binding.restart.setOnClickListener(view -> {
             ClickRepository.getInstance().setRestart(true);
         });
