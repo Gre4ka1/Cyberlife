@@ -8,6 +8,7 @@ public class BotsRepository {
 
     public void addBot(Bot b){
         bots.add(b);
+
     }
 
 
