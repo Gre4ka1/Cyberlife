@@ -37,6 +37,7 @@ public class Bot{
         if (dx==0 && dy==0) dx = size;
         this.energy=40;
         p.setColor(0xFFFFFFFF);
+        BotsRepository.getInstance().
     }
 
     public Bot(int x, int y) {
@@ -190,14 +191,38 @@ public class Bot{
         return (short) (2);
     }
 
-    /*public void runCode(){
+    public void runCode(Canvas canvas){
         for (short count = 0; count < code.length;) {
-            if (b.getCode()[count] == 13) {   //                      ГЕНЕРАЦИЯ
-                b.generate();
+            if (code[count] == 13) {   //                      ГЕНЕРАЦИЯ
+                generate();
                 count++;
                 break;
+            }
+            else if (code[count] == 14) {//                       ДВИЖЕНИЕ
+                move(canvas);
+                count++;
+                break;
+            }
+            else if (code[count] == 15) {//                         размножение
+                if (energy >= 50) {
+                    boolean f4 = true;
+                    for (Bot h : bots) {
+                        if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0] < 0 || b.getTarget()[0] >= canvas.getWidth() || b.getTarget()[1] < 0 || b.getTarget()[1] >= canvas.getHeight()) {
+                            f4 = false;
+                            break;
+                        }
+                    }
+                    if (f4) {
+                        bots.add(b.dublicate());
+                        k++;
+                        //System.out.println(b.getX() + " " + b.getY());
+                        count++;
+                        break;
+                    } else count++;
+                } else count++;
+            }
         }
-    }*/
+    }
 
 
 
