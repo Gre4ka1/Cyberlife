@@ -11,6 +11,13 @@ public class BotsRepository {
 
     }
 
+    public ArrayList<Bot> getBots() {
+        return bots;
+    }
+
+    public void setBots(ArrayList<Bot> bots) {
+        this.bots = bots;
+    }
 
     public static BotsRepository getInstance() {
         if (instance == null) {

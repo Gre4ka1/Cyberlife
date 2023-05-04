@@ -37,7 +37,7 @@ public class Bot{
         if (dx==0 && dy==0) dx = size;
         this.energy=40;
         p.setColor(0xFFFFFFFF);
-        BotsRepository.getInstance().
+        //BotsRepository.getInstance().addBot(this);
     }
 
     public Bot(int x, int y) {
@@ -49,9 +49,6 @@ public class Bot{
         p.setColor(0xFFFFFFFF);
 
 
-
-
-
         this.dx= (new Random().nextInt(2)-1)*size;
         this.dy= (new Random().nextInt(2)-1)*size;
         if (dx==0 && dy==0) dx = size;
@@ -60,6 +57,7 @@ public class Bot{
         for (int i = 0; i < code.length; i++) {
             code[i]= (short) ((short) new Random().nextInt(20)+1);
         }
+        //BotsRepository.getInstance().addBot(this);
     }
 
     public void draw(Canvas canvas){
@@ -206,20 +204,48 @@ public class Bot{
             else if (code[count] == 15) {//                         размножение
                 if (energy >= 50) {
                     boolean f4 = true;
-                    for (Bot h : bots) {
-                        if (h.getX() == b.getTarget()[0] && h.getY() == b.getTarget()[1] || b.getTarget()[0] < 0 || b.getTarget()[0] >= canvas.getWidth() || b.getTarget()[1] < 0 || b.getTarget()[1] >= canvas.getHeight()) {
+                    for (Bot h : BotsRepository.getInstance().getBots()) {
+                        if (h.getX() == getTarget()[0] && h.getY() == getTarget()[1] || getTarget()[0] < 0 || getTarget()[0] >= canvas.getWidth() || getTarget()[1] < 0 || getTarget()[1] >= canvas.getHeight()) {
                             f4 = false;
                             break;
                         }
                     }
                     if (f4) {
-                        bots.add(b.dublicate());
-                        k++;
+                        BotsRepository.getInstance().addBot(dublicate());
+                        //k++;
                         //System.out.println(b.getX() + " " + b.getY());
                         count++;
                         break;
                     } else count++;
                 } else count++;
+            }
+            else if (code[count] == 16) {//                      ПОЕДАНИЕ
+                for (int h = 0; h < BotsRepository.getInstance().getBots().size(); h++) {
+                    if (BotsRepository.getInstance().getBots().get(h).getX() == getTarget()[0] || BotsRepository.getInstance().getBots().get(h).getY() == getTarget()[1]) {
+                        //System.out.println("SUCCESS!");
+                        eat(BotsRepository.getInstance().getBots().get(h), BotsRepository.getInstance().getBots());
+                        break;
+                    }
+                }
+                count++;
+                break;
+            } else if (code[count] == 17) {//                 ПОВОРОТ ВЛЕВО
+                rotateL();
+                count++;
+
+            } else if (code[count] == 18) {//                 ПОВОРОТ ВПРАВО
+                rotateR();
+                count++;
+
+            } else if (code[count] == 19) {//                 ПРОВЕРКА ЭНЕРГИИ
+                count += energy();
+            } else if (code[count] == 20) {//                 ПРОВЕРКА ВПЕРЕДИСТОЯЩЕГО
+                count += look(BotsRepository.getInstance().getBots());
+            } else {//default: {
+                //System.out.println("BRUH " + b.getCode()[count]);
+                if (code[count] != 0) {
+                    count += code[count];
+                } else break;
             }
         }
     }

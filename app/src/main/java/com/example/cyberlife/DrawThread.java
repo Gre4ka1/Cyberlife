@@ -106,45 +106,43 @@ public class DrawThread extends Thread{
     public void requestStop() {
         running = false;
     }
-    public static ArrayList<Bot> createBots(Canvas canvas){
-        ArrayList<Bot> bots=new ArrayList<>();
+    public static void  createBots(Canvas canvas){
+        //ArrayList<Bot> bots=new ArrayList<>();
         for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
             int newx = (int)(new Random().nextInt(canvas.getWidth()) /50)*50;
             int newy = (int)(new Random().nextInt(canvas.getHeight())/50)*50;
 
             boolean f=true;
-            for (Bot j:bots) {
+            for (Bot j:BotsRepository.getInstance().getBots()) {
                 if(j.clickCheck(newx,newy)){
                     f=false;
                     i--;
                 }
             }
             if (f){
-                bots.add(new Bot(newx,newy));
+                BotsRepository.getInstance().addBot(new Bot(newx,newy));
             }
 
         }
-        return bots;
     }
-    public static ArrayList<Bot> createBots(){
-        ArrayList<Bot> bots=new ArrayList<>();
+    public static void createBots(){
+        //ArrayList<Bot> bots=new ArrayList<>();
         for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
             int newx = (int)(new Random().nextInt(500) /50)*50;
             int newy = (int)(new Random().nextInt(1000)/50)*50;
 
             boolean f=true;
-            for (Bot j:bots) {
+            for (Bot j:BotsRepository.getInstance().getBots()) {
                 if(j.clickCheck(newx,newy)){
                     f=false;
                     i--;
                 }
             }
             if (f){
-                bots.add(new Bot(newx,newy));
+               BotsRepository.getInstance().addBot(new Bot(newx,newy));
             }
 
         }
-        return bots;
     }
 
 
@@ -163,10 +161,10 @@ public class DrawThread extends Thread{
     }
     @Override
     public void run() {
-        ArrayList<Bot> bots=new ArrayList<>();
-        bots=createBots();
-        bots.add(new Bot(500,500,new short[]{19,2,13,20,17,15,9,6,3,6,4,6,9,6,12,12},0xFFFF0000));
-        bots.add(new Bot(0,0,new short[]{13,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},0xFFFF00FF));
+        //ArrayList<Bot> bots=new ArrayList<>();
+        BotsRepository.getInstance().addBot(new Bot(500,500,new short[]{19,2,13,20,17,15,9,6,3,6,4,6,9,6,12,12},0xFFFF0000));
+        BotsRepository.getInstance().addBot(new Bot(0,0,new short[]{13,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},0xFFFF00FF));
+        createBots();
 
         //bots.add(bots.get(0).dublicate());
         /*for (int i = 0; i < 10; i++) {
@@ -192,31 +190,36 @@ public class DrawThread extends Thread{
 
 
         while (running) {
-            if (bots.size()>1) {
-                for (int i = 0; i < bots.size(); i++) {
+            //BotsRepository.getInstance().setBots(bots);
+            System.out.println(BotsRepository.getInstance().getBots().size());
+            if (BotsRepository.getInstance().getBots().size()>1) {
+                for (int i = 0; i < BotsRepository.getInstance().getBots().size(); i++) {
                     if (stopGame != 0) {
-                        if (bots.get(i).minusEnergy()){
-                            bots.remove(bots.get(i));
+                        if (BotsRepository.getInstance().getBots().get(i).minusEnergy()){
+                            BotsRepository.getInstance().getBots().remove(BotsRepository.getInstance().getBots().get(i));
                             i--;
                         }
                     }
                 }
-            } else if (bots.size()==1) {
+            } else if (BotsRepository.getInstance().getBots().size()==1) {
                 if (stopGame != 0) {
-                    if (bots.get(0).minusEnergy()){
-                        bots.remove(bots.get(0));
+                    if (BotsRepository.getInstance().getBots().get(0).minusEnergy()){
+                        BotsRepository.getInstance().getBots().remove(BotsRepository.getInstance().getBots().get(0));
                     }
                 }
             }
             Canvas canvas = surfaceHolder.lockCanvas();
             if (ClickRepository.getInstance().getRestart()){
-                bots=createBots(canvas);
+                createBots(canvas);
                 ClickRepository.getInstance().setRestart(false);
             }
 
             byte k=0;
             if (stopGame!=0) {
-                for (int bb = 0; bb < bots.size() - k; bb++) {  //TODO bot.runOnCode() ?
+                for (Bot bot:BotsRepository.getInstance().getBots()) {
+                    bot.runCode(canvas);
+                }
+                /*for (int bb = 0; bb < bots.size() - k; bb++) {
                     Bot b = bots.get(bb);
 
                     for (short count = 0; count < b.getCode().length; ) {
@@ -275,7 +278,7 @@ public class DrawThread extends Thread{
                             } else break;
                         }
                     }
-                }
+                }*/
             }
 
 //========================================отрисовка===========================================
@@ -293,7 +296,7 @@ public class DrawThread extends Thread{
                     }
                     //----------проверка на выделение бота ------------
                     boolean notEmptyFlag=false;
-                    for (Bot i : bots) {
+                    for (Bot i : BotsRepository.getInstance().getBots()) {
                         if (i.clickCheck(cx,cy)) {
                             CodeRepository.getInstance().updateCode(i.getCode());
                             infoBot = i;
@@ -303,7 +306,7 @@ public class DrawThread extends Thread{
                     }
                     if (!notEmptyFlag) infoBot=null;
 
-                    for (Bot i:bots) {
+                    for (Bot i:BotsRepository.getInstance().getBots()) {
                         i.draw(canvas);
                     }
                     if (infoBot != null) infoBot.drawInfo(canvas);
