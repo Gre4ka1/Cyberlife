@@ -4,11 +4,15 @@ import java.util.ArrayList;
 
 public class BotsRepository {
     private static BotsRepository instance;
-    private ArrayList<Bot> bots;
+    private ArrayList<Bot> bots=new ArrayList<>();
 
     public void addBot(Bot b){
+        System.out.println(bots);
         bots.add(b);
 
+    }
+
+    public BotsRepository() {
     }
 
     public ArrayList<Bot> getBots() {

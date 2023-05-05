@@ -216,7 +216,8 @@ public class DrawThread extends Thread{
 
             byte k=0;
             if (stopGame!=0) {
-                for (Bot bot:BotsRepository.getInstance().getBots()) {
+                ArrayList<Bot> tempbots=BotsRepository.getInstance().getBots();
+                for (Bot bot:tempbots) {
                     bot.runCode(canvas);
                 }
                 /*for (int bb = 0; bb < bots.size() - k; bb++) {
