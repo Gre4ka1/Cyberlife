@@ -120,6 +120,7 @@ public class Bot{
         return new Bot(x+dx,y+dy,newCode,color);
     }
     public void eat(Bot enemy, ArrayList<Bot> bots){
+
         bots.remove(enemy);
         energy+=enemy.energy*0.75;
         if (energy>100) energy=100;
@@ -189,7 +190,8 @@ public class Bot{
         return (short) (2);
     }
 
-    public void runCode(Canvas canvas){
+    public ArrayList<Bot>[] runCode(Canvas canvas,ArrayList<Bot>[] tempL){
+
         for (short count = 0; count < code.length;) {
             if (code[count] == 13) {   //                      ГЕНЕРАЦИЯ
                 generate();
@@ -211,7 +213,8 @@ public class Bot{
                         }
                     }
                     if (f4) {
-                        BotsRepository.getInstance().addBot(dublicate());
+                        //BotsRepository.getInstance().addBot(dublicate());
+                        tempL[0].add(dublicate());
                         //k++;
                         //System.out.println(b.getX() + " " + b.getY());
                         count++;
@@ -223,13 +226,15 @@ public class Bot{
                 for (int h = 0; h < BotsRepository.getInstance().getBots().size(); h++) {
                     if (BotsRepository.getInstance().getBots().get(h).getX() == getTarget()[0] || BotsRepository.getInstance().getBots().get(h).getY() == getTarget()[1]) {
                         //System.out.println("SUCCESS!");
-                        eat(BotsRepository.getInstance().getBots().get(h), BotsRepository.getInstance().getBots());
+                        tempL[1].add(BotsRepository.getInstance().getBots().get(h));
+                        //eat(BotsRepository.getInstance().getBots().get(h), BotsRepository.getInstance().getBots());
                         break;
                     }
                 }
                 count++;
                 break;
-            } else if (code[count] == 17) {//                 ПОВОРОТ ВЛЕВО
+            }
+            else if (code[count] == 17) {//                 ПОВОРОТ ВЛЕВО
                 rotateL();
                 count++;
 
@@ -248,6 +253,7 @@ public class Bot{
                 } else break;
             }
         }
+        return tempL;
     }
 
 

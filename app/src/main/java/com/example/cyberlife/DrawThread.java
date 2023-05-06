@@ -108,6 +108,7 @@ public class DrawThread extends Thread{
     }
     public static void  createBots(Canvas canvas){
         //ArrayList<Bot> bots=new ArrayList<>();
+        BotsRepository.getInstance().clear();
         for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
             int newx = (int)(new Random().nextInt(canvas.getWidth()) /50)*50;
             int newy = (int)(new Random().nextInt(canvas.getHeight())/50)*50;
@@ -127,6 +128,7 @@ public class DrawThread extends Thread{
     }
     public static void createBots(){
         //ArrayList<Bot> bots=new ArrayList<>();
+
         for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
             int newx = (int)(new Random().nextInt(500) /50)*50;
             int newy = (int)(new Random().nextInt(1000)/50)*50;
@@ -162,6 +164,8 @@ public class DrawThread extends Thread{
     @Override
     public void run() {
         //ArrayList<Bot> bots=new ArrayList<>();
+        if (BotsRepository.getInstance().getBots()==null)
+            BotsRepository.getInstance().init();
         BotsRepository.getInstance().addBot(new Bot(500,500,new short[]{19,2,13,20,17,15,9,6,3,6,4,6,9,6,12,12},0xFFFF0000));
         BotsRepository.getInstance().addBot(new Bot(0,0,new short[]{13,18,17,81,12,29,9,6,3,6,4,6,9,6,12,12},0xFFFF00FF));
         createBots();
@@ -210,15 +214,30 @@ public class DrawThread extends Thread{
             }
             Canvas canvas = surfaceHolder.lockCanvas();
             if (ClickRepository.getInstance().getRestart()){
+
                 createBots(canvas);
                 ClickRepository.getInstance().setRestart(false);
             }
 
             byte k=0;
             if (stopGame!=0) {
-                ArrayList<Bot> tempbots=BotsRepository.getInstance().getBots();
-                for (Bot bot:tempbots) {
-                    bot.runCode(canvas);
+                ArrayList<Bot> tempbots = BotsRepository.getInstance().getBots();
+                if (tempbots == null) {
+                    BotsRepository.getInstance().init();
+                }
+                System.out.println(tempbots);
+                ArrayList<Bot>[] tempL = new ArrayList[]{new ArrayList<Bot>(), new ArrayList<Bot>()};
+                for (Bot bot : tempbots) {
+                    tempL = bot.runCode(canvas,tempL);
+                    //System.out.println(bot);
+                }
+                while(tempL[0].size()>0){
+                    BotsRepository.getInstance().addBot(tempL[0].get(0));
+                    tempL[0].remove(0);
+                }
+                while(tempL[0].size()>0){
+                    BotsRepository.getInstance().delBot(tempL[1].get(0));
+                    tempL[1].remove(0);
                 }
                 /*for (int bb = 0; bb < bots.size() - k; bb++) {
                     Bot b = bots.get(bb);
