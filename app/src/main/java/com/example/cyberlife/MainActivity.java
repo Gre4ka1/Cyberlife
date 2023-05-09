@@ -1,6 +1,7 @@
 package com.example.cyberlife;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -28,7 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         binding.gameView.setOnTouchListener(this);
         System.out.println();
 
-        //TODO: autoGenerateButton
+        //TODO: autoGenerateButton +-
         binding.restart.setOnClickListener(view -> {
             ClickRepository.getInstance().setRestart(true);
         });
@@ -72,10 +73,16 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
             }
         });
         binding.loadButton.setOnClickListener(view -> {
-            //TODO
+            //Dialog dialog = new Dialog();
+            //dialog.onCreateView(getLayoutInflater(),this,bu)
+            showDialog();
         });
     }
-
+    private void showDialog() {
+        FragmentManager fm = getSupportFragmentManager();
+        Dialog dialog = new Dialog();
+        dialog.show(fm, "MyDialog");
+    }
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
