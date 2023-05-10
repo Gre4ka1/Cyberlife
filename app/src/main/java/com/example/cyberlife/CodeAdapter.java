@@ -10,14 +10,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class CodeAdapter  extends RecyclerView.Adapter<CodeAdapter.ViewHolder>{
 
     private LayoutInflater inflater;
-    private List<Code> codes;
+    private ArrayList<Code> codes;
 
-    CodeAdapter(Context context, List<Code> codes) {
+    CodeAdapter(Context context, ArrayList<Code> codes) {
         this.codes = codes;
         this.inflater = LayoutInflater.from(context);
     }
