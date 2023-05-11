@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
@@ -16,7 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
-    ActivityMainBinding binding;
+    private ActivityMainBinding binding;
     private CodeRepository repositiry = CodeRepository.getInstance();
 
     @Override
@@ -45,25 +46,28 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             File file;
             try {
-                file = new File(this.getFilesDir(), "code_.txt");
+                //file = new File(this.getFilesDir(), "code_.txt");
+                file = new File("code.txt");
                 if (!file.exists()) {
+                    System.err.println("MA.save:file not found");
                     file.createNewFile();
                 }
-                // Открытие потока для записи в файл
-                FileOutputStream outputStream = new FileOutputStream(file, true);
+                if (saveCode!=null) {
+                    // Открытие потока для записи в файл
+                    FileOutputStream outputStream = new FileOutputStream(file, true);
 
-                // Записываем строку "текст" в файл
-                String data = "";
-                for (short sh : saveCode) {
-                    data += sh + " ";
+                    // Записываем строку "текст" в файл
+                    String data = "";
+                    for (short sh : saveCode) {
+                        data += sh + " ";
 
+                    }
+                    data += "\n";
+                    outputStream.write(data.getBytes());
+
+                    // Закрытие потока записи
+                    outputStream.close();
                 }
-                data += "\n";
-                outputStream.write(data.getBytes());
-
-                // Закрытие потока записи
-                outputStream.close();
-
             } catch (FileNotFoundException e) {
                 //Toast.makeText(context, "Ошибка FileNotFound", Toast.LENGTH_SHORT).show();
                 throw new RuntimeException(e);
@@ -79,9 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         });
     }
     private void showDialog() {
-        FragmentManager fm = getSupportFragmentManager();
-        Dialog dialog = new Dialog();
-        dialog.show(fm, "MyDialog");
+        FragmDialog dialog = new FragmDialog();
+        dialog.show(getSupportFragmentManager(), "MyDialog");
     }
     @Override
     public boolean onTouch(View v, MotionEvent event) {

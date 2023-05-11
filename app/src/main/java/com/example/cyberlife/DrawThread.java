@@ -195,7 +195,7 @@ public class DrawThread extends Thread{
 
         while (running) {
             //BotsRepository.getInstance().setBots(bots);
-            System.out.println(BotsRepository.getInstance().getBots().size());
+            //System.out.println(BotsRepository.getInstance().getBots().size());
             if (BotsRepository.getInstance().getBots().size()>1) {
                 for (int i = 0; i < BotsRepository.getInstance().getBots().size(); i++) {
                     if (stopGame != 0) {
@@ -225,7 +225,7 @@ public class DrawThread extends Thread{
                 if (tempbots == null) {
                     BotsRepository.getInstance().init();
                 }
-                System.out.println(tempbots);
+                //System.out.println(tempbots);
                 ArrayList<Bot>[] tempL = new ArrayList[]{new ArrayList<Bot>(), new ArrayList<Bot>()};
                 for (Bot bot : tempbots) {
                     tempL = bot.runCode(canvas,tempL);
