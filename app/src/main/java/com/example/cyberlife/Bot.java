@@ -22,8 +22,6 @@ public class Bot{
 
     private Paint paint = new Paint();
     private Paint p = new Paint();
-    public static int dEnergy=25;
-    public static int mutation=10;  // процент на изменение каждой цифры кода(в тысячных)
 
 
 
@@ -89,7 +87,7 @@ public class Bot{
 
     }
     public boolean minusEnergy(){
-        energy-=Math.round(dEnergy/4);
+        energy-=Math.round(SettingsRepository.getInstance().getEnergyConsumption());
         if (energy<=0) return true;
         return false;
     }
@@ -99,20 +97,20 @@ public class Bot{
         if(getTarget()[1]>=canvas.getHeight() || getTarget()[1]<0) dy=dy*-1;
         x=x+dx;
         y=y+dy;
-        energy-=10;
+        energy-=SettingsRepository.getInstance().getEnergyConsumption()*2;
         //System.out.println("d: "+dx+" "+dy);
         //System.out.println(x+" "+y);
     }
     public void generate(){
-        energy+=dEnergy;
-        if (energy>100) energy=100;
+        energy+=SettingsRepository.getInstance().getSunEnergy();
+        energy=energy>100?100:energy;
     }
     public Bot dublicate(){//TODO изменение цвета в связи с изменением кода
-        energy-=50;
+        energy-=SettingsRepository.getInstance().getEnergyConsumption()*8;
         short[] newCode= new short[16];
         for (int i=0;i<16;i++) {
             int a = new Random().nextInt(1000);
-            if (a>=mutation) {
+            if (a>=SettingsRepository.getInstance().getMutation()) {
                 newCode[i] = code[i];
             }
             else newCode[i] = (short) (new Random().nextInt(21));
@@ -122,49 +120,27 @@ public class Bot{
     public void eat(Bot enemy, ArrayList<Bot> bots){
 
         bots.remove(enemy);
-        energy+=enemy.energy*0.75;
+        energy+=enemy.energy*(SettingsRepository.getInstance().getLindemannsRule()/100);
         if (energy>100) energy=100;
     }
     public void rotateL(){
         //System.out.println(dx+" "+dy);
-        if (energy>=5) {
-            if (dx == size && dy == -1*size) {
-                dx = 0;
-                dy = -1*size;
-            }
-            else if (dx == 0 && dy == -1*size) {
-                dx = -1*size;
-                dy = -1*size;
-            }
-            else if (dx == -1*size && dy == -1*size) {
-                dx = -1*size;
-                dy = 0;
-            }
-            else if (dx == -1*size && dy == 0) {
-                dx = -1*size;
-                dy = size;
-            }
-            else if (dx == -1*size && dy == size) {
-                dx = 0;
-                dy = size;
-            }
-            else if (dx == 0 && dy == size) {
-                dx = size;
-                dy = size;
-            }
-            else if (dx == size && dy == size) {
-                dx = size;
-                dy = 0;
-            }
-            else if (dx == size && dy == 0) {
-                dx = size;
-                dy = -1*size;
-            }
-            energy-=5;
+        int t = SettingsRepository.getInstance().getEnergyConsumption()/2;
+        if (energy>=t) {
+            if (dx == size && dy == -1*size) {dx = 0;dy = -1*size;}
+            else if (dx == 0 && dy == -1*size) {dx = -1*size;dy = -1*size;}
+            else if (dx == -1*size && dy == -1*size) {dx = -1*size;dy = 0;}
+            else if (dx == -1*size && dy == 0) {dx = -1*size;dy = size;}
+            else if (dx == -1*size && dy == size) {dx = 0;dy = size;}
+            else if (dx == 0 && dy == size) {dx = size;dy = size;}
+            else if (dx == size && dy == size) {dx = size;dy = 0;}
+            else if (dx == size && dy == 0) {dx = size;dy = -1*size;}
+            energy-=t;
         }
     }
     public void rotateR(){
-        if (energy>=5){
+        int t = SettingsRepository.getInstance().getEnergyConsumption()/2;
+        if (energy>=t){
             if (dx==size && dy ==-1*size){ dx=size; dy=0;}
             else if (dx==size && dy ==0) {dx=size; dy=size;}
             else if (dx==size && dy ==size) {dx=0; dy=size;}
@@ -173,7 +149,7 @@ public class Bot{
             else if (dx==-1*size && dy ==0) {dx=-1*size; dy=-1*size;}
             else if (dx==-1*size && dy ==-1*size) {dx=0; dy=-1*size;}
             else if (dx==0 && dy ==-1*size) {dx=size; dy=-1*size;}
-            energy-=5;
+            energy-=t;
         }
     }
     public short energy(){

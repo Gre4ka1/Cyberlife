@@ -3,4 +3,6 @@
     <string name="sett_name1">количество ботов</string>
     <string name="sett_name2">сила солнца</string>
     <string name="sett_name3">вероятность мутации</string>
+    <string name="sett_name4">расход энергии</string>
+    <string name="sett_name5">правило Линдемана</string>
 </resources>

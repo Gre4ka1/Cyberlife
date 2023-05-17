@@ -4,9 +4,6 @@ public class CodeRepository {
     private static CodeRepository instance;
     private short[] code;
 
-    private CodeRepository() {
-    }
-
     public short[] getCode() {
         return code;
     }
