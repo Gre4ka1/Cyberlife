@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sett_name1">nombre de robots</string>
+    <string name="sett_name2">la puissance du soleil</string>
+    <string name="sett_name3">probabilite de mutation</string>
+</resources>

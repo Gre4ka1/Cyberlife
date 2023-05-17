@@ -27,6 +27,14 @@ public class CodeAdapter  extends RecyclerView.Adapter<CodeAdapter.ViewHolder>{
 
     }
 
+    public ArrayList<Code> getCodes() {
+        return codes;
+    }
+
+    public void setCodes(ArrayList<Code> codes) {
+        this.codes = codes;
+    }
+
     @Override
     public CodeAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 

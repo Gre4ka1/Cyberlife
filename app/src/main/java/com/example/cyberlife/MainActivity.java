@@ -1,13 +1,10 @@
 package com.example.cyberlife;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 
 import android.os.Bundle;
-import android.os.Environment;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Toast;
 
 import com.example.cyberlife.databinding.ActivityMainBinding;
 
@@ -46,8 +43,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
             File file;
             try {
-                //file = new File(this.getFilesDir(), "code_.txt");
-                file = new File("code.txt");
+                file = new File(getFilesDir(),"code.txt");
+                //file = new File("code.txt");
                 if (!file.exists()) {
                     System.err.println("MA.save:file not found");
                     file.createNewFile();
@@ -79,12 +76,21 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         binding.loadButton.setOnClickListener(view -> {
             //Dialog dialog = new Dialog();
             //dialog.onCreateView(getLayoutInflater(),this,bu)
-            showDialog();
+            showDialog("load");
+        });
+        binding.settings.setOnClickListener(view ->{
+            showDialog("settings");
+            //Todo: dialog
         });
     }
-    private void showDialog() {
-        FragmDialog dialog = new FragmDialog();
-        dialog.show(getSupportFragmentManager(), "MyDialog");
+    private void showDialog(String tag) {
+        if (tag.equals("load")) {
+            LoadDialog loadDialog = new LoadDialog();
+            loadDialog.show(getSupportFragmentManager(), "Load");
+        } else {
+            SettingDialog settingDialog= new SettingDialog();
+            settingDialog.show(getSupportFragmentManager(),"Settings");
+        }
     }
     @Override
     public boolean onTouch(View v, MotionEvent event) {

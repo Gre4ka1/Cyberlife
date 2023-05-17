@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sett_name1">количество ботов</string>
+    <string name="sett_name2">сила солнца</string>
+    <string name="sett_name3">вероятность мутации</string>
+</resources>

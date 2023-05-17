@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Cyberlife</string>
+    <string name="app_name" translatable="false">Cyberlife</string>
+    <string name="sett_name1">number of bots</string>
+    <string name="sett_name2">sun power</string>
+    <string name="sett_name3">mutation probability</string>
+
 </resources>
