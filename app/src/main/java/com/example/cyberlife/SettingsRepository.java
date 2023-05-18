@@ -3,11 +3,11 @@ package com.example.cyberlife;
 public class SettingsRepository {
     private static SettingsRepository instance;
 
-    private int numberOfBots;
-    private int sunEnergy;
-    private int energyConsumption;
-    private int mutation;
-    private int LindemannsRule;
+    private int numberOfBots=40;
+    private int sunEnergy=25;
+    private int energyConsumption=6;
+    private int mutation=10;
+    private int LindemannsRule=75;
 
 
     public int getLindemannsRule() {return LindemannsRule;}

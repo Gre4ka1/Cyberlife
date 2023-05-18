@@ -21,6 +21,15 @@ public class SettingDialog extends DialogFragment {
         SeekBar seekBar3 = view.findViewById(R.id.seek_bar3);
         SeekBar seekBar4 = view.findViewById(R.id.seek_bar4);
         SeekBar seekBar5 = view.findViewById(R.id.seek_bar5);
+
+        SettingsRepository t = SettingsRepository.getInstance();
+        seekBar1.setProgress(t.getNumberOfBots());
+        seekBar2.setProgress(t.getSunEnergy());
+        seekBar3.setProgress(t.getMutation());
+        seekBar4.setProgress(t.getEnergyConsumption());
+        seekBar5.setProgress(t.getLindemannsRule());
+
+        view.setMinimumWidth(500);
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

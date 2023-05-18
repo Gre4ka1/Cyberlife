@@ -15,7 +15,7 @@ import java.util.Random;
 public class Bot{
     private int x,y;
     private int dx,dy;
-    private final int size=50;
+    private final int size=25;
     private short[] code;
     private int color;
     private short energy;
