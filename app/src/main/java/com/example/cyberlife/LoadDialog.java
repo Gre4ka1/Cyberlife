@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -24,31 +27,40 @@ import java.util.ArrayList;
 public class LoadDialog extends DialogFragment {
     private RecyclerView recyclerView;
     private CodeAdapter adapter;
+    private View binding;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_layout, container, false);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Code example = new Code();
+        example.setCode(new short[]{1, 1, 1, 1,
+                                    1, 1, 1, 1,
+                                    1, 1, 1, 1,
+                                    1, 1, 1, 1});
+        ArrayList<Code> exa = new ArrayList<>();
+        exa.add(example);
+        adapter=new CodeAdapter(getContext(), exa);
         recyclerView = view.findViewById(R.id.recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setAdapter(new CodeAdapter(getActivity(), new ArrayList<>()));
         System.out.println("111111111111111111111111111111111");
         if (ContextCompat.checkSelfPermission(getContext(), "android.permission.READ_EXTERNAL_STORAGE") == PackageManager.PERMISSION_GRANTED) {
             System.out.println("permission is");
-
-            Object[] a=load(view);
-            CodeAdapter adapter1=(CodeAdapter)a[1];
-
-            System.out.println(adapter1.getCodes().toString());
-            recyclerView.setAdapter((RecyclerView.Adapter) a[1]);
+            adapter.setCodes(load());
+            recyclerView.setAdapter(adapter);
         } else {
             System.out.println("2222222222222222222222222");
+
+            ActivityCompat.requestPermissions(this.getActivity(), new String[] {"android.permission.READ_EXTERNAL_STORAGE"},
+                    1);
+            //=================================
             ActivityResultLauncher<String> requestPermissionLauncher =
                     registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
-
+                        System.out.println("3333333333333333333333");
                         if (isGranted) {
                             System.out.println("permission granted");
-                            Object[] a=load(view);
-                            recyclerView.setAdapter((RecyclerView.Adapter) a[1]);
+                            adapter.setCodes(load());
+                            recyclerView.setAdapter(adapter);
                         } else {
                             System.out.println("permission denied");
                         }
@@ -57,9 +69,15 @@ public class LoadDialog extends DialogFragment {
             requestPermissionLauncher.launch("da");
         }
 
-        return view;
     }
-        Object[] load(View view){
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //View view = inflater.inflate(R.layout.dialog_layout, container, false);
+        binding = getLayoutInflater().inflate(R.layout.dialog_layout, container, true);
+        return binding;
+    }
+        ArrayList<Code> load(){
         File file = new File("code.txt");
         if (file.exists()) {
             try {
@@ -98,11 +116,12 @@ public class LoadDialog extends DialogFragment {
 
                 }
 
-                adapter = new CodeAdapter(getContext(), tList);
+                /*adapter = new CodeAdapter(getContext(), tList);
                 //recyclerView.setAdapter(adapter);
-
+*/
                 fileInput.close();
-                return new Object[]{view,adapter};
+                return tList;
+                //return new Object[]{view,adapter};
             } catch (FileNotFoundException e) {
                 System.err.println("exceptions");
                 throw new RuntimeException(e);

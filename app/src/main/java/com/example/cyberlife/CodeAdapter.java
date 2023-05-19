@@ -52,6 +52,7 @@ public class CodeAdapter  extends RecyclerView.Adapter<CodeAdapter.ViewHolder>{
 
     @Override
     public int getItemCount() {
+
         return codes.size();
     }
 

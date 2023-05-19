@@ -199,11 +199,12 @@ public class Bot{
                 } else count++;
             }
             else if (code[count] == 16) {//                      ПОЕДАНИЕ
-                for (int h = 0; h < BotsRepository.getInstance().getBots().size(); h++) {
-                    if (BotsRepository.getInstance().getBots().get(h).getX() == getTarget()[0] || BotsRepository.getInstance().getBots().get(h).getY() == getTarget()[1]) {
-                        //System.out.println("SUCCESS!");
-                        tempL[1].add(BotsRepository.getInstance().getBots().get(h));
-                        //eat(BotsRepository.getInstance().getBots().get(h), BotsRepository.getInstance().getBots());
+                BotsRepository t = BotsRepository.getInstance();
+                for (int h = 0; h < t.getBots().size(); h++) {
+                    if (t.getInstance().getBots().get(h).getX() == getTarget()[0] || t.getInstance().getBots().get(h).getY() == getTarget()[1]) {
+                        tempL[1].add(t.getBots().get(h));
+                        energy+=t.getBots().get(h).energy*(SettingsRepository.getInstance().getLindemannsRule()/100);
+                        if (energy>100) energy=100;
                         break;
                     }
                 }

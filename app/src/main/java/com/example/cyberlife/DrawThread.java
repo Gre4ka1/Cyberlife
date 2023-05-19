@@ -129,7 +129,7 @@ public class DrawThread extends Thread{
     public static void createBots(){
         //ArrayList<Bot> bots=new ArrayList<>();
 
-        for (int i = 0; i < 10; i++) { //TODO kolichestvo botov
+        for (int i = 0; i < 10; i++) {
             int newx = (int)(new Random().nextInt(500) /50)*50;
             int newy = (int)(new Random().nextInt(1000)/50)*50;
 
