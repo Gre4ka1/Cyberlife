@@ -40,8 +40,8 @@ public class LoadDialog extends DialogFragment {
         ArrayList<Code> exa = new ArrayList<>();
         exa.add(example);
         adapter=new CodeAdapter(getContext(), exa);
+        setInitialData();
         recyclerView = view.findViewById(R.id.recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         //recyclerView.setAdapter(new CodeAdapter(getActivity(), new ArrayList<>()));
         System.out.println("111111111111111111111111111111111");
         if (ContextCompat.checkSelfPermission(getContext(), "android.permission.READ_EXTERNAL_STORAGE") == PackageManager.PERMISSION_GRANTED) {
@@ -71,34 +71,48 @@ public class LoadDialog extends DialogFragment {
 
     }
 
+    private void setInitialData() {
+        Code tempCode = new Code();
+        tempCode.setCode(new short[]{13,13,13,13,
+                                     13,13,13,13,
+                                     13,13,13,13,
+                                     13,13,13,13});
+        adapter.addCode(tempCode);
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //View view = inflater.inflate(R.layout.dialog_layout, container, false);
         binding = getLayoutInflater().inflate(R.layout.dialog_layout, container, true);
         return binding;
     }
-        ArrayList<Code> load(){
-        File file = new File("code.txt");
+    private  ArrayList<Code> load(){
+        File dir = new File("/data/data/com.example.cyberlife/files");
+        File file = new File(dir,"code.txt");
         if (file.exists()) {
             try {
 
                 FileInputStream fileInput = new FileInputStream(file);
-                int content;
+                int content = fileInput.read();
                 String text = "";
-                while ((content = fileInput.read()) != -1) {
-                    System.out.print((char) content);
+                while (content != -1) {
+                    //System.out.print((char) content);
                     text += (char) content;
+                    content=fileInput.read();
                 }
+                System.out.println("============== "+text);
                 String[] array = (text.replaceAll("\\D+", " ").trim()).split(" ");
+                System.out.println("-------------- "+array.length);
                 ArrayList<Short> a = new ArrayList<>();
                 for (int i = 0; i < array.length; i++) {
-                    a.set(i, Short.valueOf(array[i]));
+                    a.add(i, Short.valueOf(array[i]));
                 }
-                System.out.println("////////////////////////");
+                /*System.out.println("////////////////////////");
                 for (int i : a) {
                     System.out.print(i + " ");
                 }
-                System.out.println(a.size() + "////////////////////////");
+                System.out.println(a.size() + "////////////////////////");*/
 
                 if (a.size() % 16 != 0) {
                     System.err.println("codeFile length error");

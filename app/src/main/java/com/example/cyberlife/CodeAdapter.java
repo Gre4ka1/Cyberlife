@@ -26,7 +26,9 @@ public class CodeAdapter  extends RecyclerView.Adapter<CodeAdapter.ViewHolder>{
     public CodeAdapter() {
 
     }
-
+    public void addCode(Code code){
+        codes.add(code);
+    }
     public ArrayList<Code> getCodes() {
         return codes;
     }
@@ -57,7 +59,7 @@ public class CodeAdapter  extends RecyclerView.Adapter<CodeAdapter.ViewHolder>{
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView textView;
+        final TextView textView;
         ViewHolder(View view){
             super(view);
             textView = view.findViewById(R.id.text);

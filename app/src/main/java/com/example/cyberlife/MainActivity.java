@@ -80,7 +80,6 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
         });
         binding.settings.setOnClickListener(view ->{
             showDialog("settings");
-            //Todo: dialog
         });
     }
     private void showDialog(String tag) {
