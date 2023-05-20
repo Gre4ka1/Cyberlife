@@ -15,7 +15,7 @@ import java.util.Random;
 public class Bot{
     private int x,y;
     private int dx,dy;
-    private final int size=25;
+    public static final int size=40;
     private short[] code;
     private int color;
     private short energy;
@@ -95,9 +95,19 @@ public class Bot{
         //System.out.println(x+" "+y);
         if(getTarget()[0]>=canvas.getWidth() || getTarget()[0]<0) dx=dx*-1;
         if(getTarget()[1]>=canvas.getHeight() || getTarget()[1]<0) dy=dy*-1;
-        x=x+dx;
-        y=y+dy;
-        energy-=SettingsRepository.getInstance().getEnergyConsumption()*2;
+        BotsRepository t=BotsRepository.getInstance();
+        boolean  flag = true;
+        for (int i = 0; i < t.getBots().size(); i++) {
+            if (look(t.getBots())==1){
+                flag=false;
+            }
+        }
+        if (flag){
+            x=x+dx;
+            y=y+dy;
+            energy-=SettingsRepository.getInstance().getEnergyConsumption()*2;
+        }
+
         //System.out.println("d: "+dx+" "+dy);
         //System.out.println(x+" "+y);
     }
@@ -115,7 +125,14 @@ public class Bot{
             }
             else newCode[i] = (short) (new Random().nextInt(21));
         }
-        return new Bot(x+dx,y+dy,newCode,color);
+        BotsRepository t=BotsRepository.getInstance();
+        boolean  flag = true;
+        for (int i = 0; i < t.getBots().size(); i++) {
+            if (look(t.getBots())==1){
+                return null;
+            }
+        }
+        return new Bot(x + dx, y + dy, newCode, color);
     }
     public void eat(Bot enemy, ArrayList<Bot> bots){
 
@@ -190,7 +207,11 @@ public class Bot{
                     }
                     if (f4) {
                         //BotsRepository.getInstance().addBot(dublicate());
-                        tempL[0].add(dublicate());
+                        Bot tr = dublicate();
+                        if (tr!=null){
+                            tempL[0].add(tr);
+                        }
+
                         //k++;
                         //System.out.println(b.getX() + " " + b.getY());
                         count++;

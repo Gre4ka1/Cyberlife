@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -23,6 +24,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 
 public class LoadDialog extends DialogFragment {
     private RecyclerView recyclerView;
@@ -42,6 +44,28 @@ public class LoadDialog extends DialogFragment {
         adapter=new CodeAdapter(getContext(), exa);
         setInitialData();
         recyclerView = view.findViewById(R.id.recyclerview);
+        CodeAdapter.OnCodeClickListener codeClickListener = new CodeAdapter.OnCodeClickListener() {
+            @Override
+            public void onCodeClick(Code code, int position) {
+                //Todo obrabotka nazhatiya
+                BotsRepository tt = BotsRepository.getInstance();
+                for (int i = 0; i < tt.getBots().size(); i++) {
+                    if (tt.getBots().get(i).equals(tt.getInfoBot())){
+                        Random r=new Random();
+                        int col=((r.nextInt(155)+100) << 24)+((r.nextInt(255)) << 16)+(r.nextInt(255) << 8)+r.nextInt(255);
+                        Bot t = new Bot(tt.getInfoBot().getX(),tt.getInfoBot().getY(), code.getCode(), col);
+                        ArrayList<Bot> tr = new ArrayList<>();
+                        tr=BotsRepository.getInstance().getBots();
+                        tr.set(i,t);
+                        tt.setBots(tr);
+                        BotsRepository.getInstance().setInfoBot(tt.getBots().get(i));
+                        Toast.makeText(getContext(), R.string.Success_load,
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        };
+        adapter=new CodeAdapter(getContext(), exa, codeClickListener);
         //recyclerView.setAdapter(new CodeAdapter(getActivity(), new ArrayList<>()));
         System.out.println("111111111111111111111111111111111");
         if (ContextCompat.checkSelfPermission(getContext(), "android.permission.READ_EXTERNAL_STORAGE") == PackageManager.PERMISSION_GRANTED) {
@@ -134,6 +158,7 @@ public class LoadDialog extends DialogFragment {
                 //recyclerView.setAdapter(adapter);
 */
                 fileInput.close();
+                System.out.println(tList.size());
                 return tList;
                 //return new Object[]{view,adapter};
             } catch (FileNotFoundException e) {
@@ -144,7 +169,10 @@ public class LoadDialog extends DialogFragment {
                 System.err.println("exceptions");
                 throw new RuntimeException(e);
             }
-        } else System.err.println("FD: file not found");
-            return null;
+        }
+        else {
+            System.err.println("FD: file not found");
+        }
+        return null;
         }
 }

@@ -5,5 +5,7 @@
     <string name="sett_name3">probabilite de mutation</string>
     <string name="sett_name4">consommation d\'énergie</string>
     <string name="sett_name5">La règle de Lindemann</string>
+    <string name="Success_save">enregistrement réussi</string>
+    <string name="Success_load">téléchargement réussi</string>
 
 </resources>

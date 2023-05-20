@@ -2,9 +2,11 @@ package com.example.cyberlife;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.cyberlife.databinding.ActivityMainBinding;
 
@@ -12,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements View.OnTouchListener {
     private ActivityMainBinding binding;
@@ -64,6 +67,8 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
 
                     // Закрытие потока записи
                     outputStream.close();
+                    Toast.makeText(getApplicationContext(), R.string.Success_save,
+                            Toast.LENGTH_SHORT).show();
                 }
             } catch (FileNotFoundException e) {
                 //Toast.makeText(context, "Ошибка FileNotFound", Toast.LENGTH_SHORT).show();
@@ -73,10 +78,19 @@ public class MainActivity extends AppCompatActivity implements View.OnTouchListe
                 throw new RuntimeException(e);
             }
         });
+        binding.add.setOnClickListener(view -> {
+            ArrayList<Bot> b = BotsRepository.getInstance().getBots();
+            b.add(new Bot(ClickRepository.getInstance().getClickX()-ClickRepository.getInstance().getClickX()%Bot.size,
+                    ClickRepository.getInstance().getClickY()-ClickRepository.getInstance().getClickY()%Bot.size));
+            BotsRepository.getInstance().setBots(b);
+        });
         binding.loadButton.setOnClickListener(view -> {
             //Dialog dialog = new Dialog();
             //dialog.onCreateView(getLayoutInflater(),this,bu)
-            showDialog("load");
+            File dir = new File("/data/data/com.example.cyberlife/files");
+            File file = new File(dir,"code.txt");
+            if (file.exists())
+                showDialog("load");
         });
         binding.settings.setOnClickListener(view ->{
             showDialog("settings");

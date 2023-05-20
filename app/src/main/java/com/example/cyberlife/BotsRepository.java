@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class BotsRepository {
     private static BotsRepository instance;
     private ArrayList<Bot> bots;
+    private Bot infoBot;
 
     public void addBot(Bot b){
         System.out.println(bots);
@@ -17,6 +18,15 @@ public class BotsRepository {
 
     public ArrayList<Bot> getBots() {
         return bots;
+    }
+
+
+    public Bot getInfoBot() {
+        return infoBot;
+    }
+
+    public void setInfoBot(Bot infoBot) {
+        this.infoBot = infoBot;
     }
 
     public void setBots(ArrayList<Bot> bots) {

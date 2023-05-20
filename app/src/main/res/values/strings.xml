@@ -5,5 +5,7 @@
     <string name="sett_name3">mutation probability</string>
     <string name="sett_name4">energy consumption</string>
     <string name="sett_name5">Lindemanns rule</string>
+    <string name="Success_save">Success saving</string>
+    <string name="Success_load">Success loading</string>
 
 </resources>

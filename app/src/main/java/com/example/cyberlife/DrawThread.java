@@ -26,7 +26,6 @@ public class DrawThread extends Thread{
     private volatile boolean running = true;//флаг для остановки потока
     private CodeRepository repositiry = CodeRepository.getInstance();
 
-    private Bot infoBot=null;
     private short[] saveCode = new short[16];
     Paint background = new Paint();
     Paint background2 = new Paint();
@@ -110,8 +109,8 @@ public class DrawThread extends Thread{
         //ArrayList<Bot> bots=new ArrayList<>();
         BotsRepository.getInstance().clear();
         for (int i = 0; i < SettingsRepository.getInstance().getNumberOfBots(); i++) {
-            int newx = (int)(new Random().nextInt(canvas.getWidth()) /50)*50;
-            int newy = (int)(new Random().nextInt(canvas.getHeight())/50)*50;
+            int newx = (int)(new Random().nextInt(canvas.getWidth()) /Bot.size)*Bot.size;
+            int newy = (int)(new Random().nextInt(canvas.getHeight())/Bot.size)*Bot.size;
 
             boolean f=true;
             for (Bot j:BotsRepository.getInstance().getBots()) {
@@ -130,8 +129,8 @@ public class DrawThread extends Thread{
         //ArrayList<Bot> bots=new ArrayList<>();
 
         for (int i = 0; i < 10; i++) {
-            int newx = (int)(new Random().nextInt(500) /50)*50;
-            int newy = (int)(new Random().nextInt(1000)/50)*50;
+            int newx = (int)(new Random().nextInt(500) /Bot.size)*Bot.size;
+            int newy = (int)(new Random().nextInt(1000)/Bot.size)*Bot.size;
 
             boolean f=true;
             for (Bot j:BotsRepository.getInstance().getBots()) {
@@ -311,25 +310,26 @@ public class DrawThread extends Thread{
                     if (instance.getClickX()!=null) {
                         cx = instance.getClickX();
                         cy = instance.getClickY();
-                        instance.setClickX(null);
-                        instance.setClickX(null);
+                        /*instance.setClickX(null);
+                        instance.setClickX(null);*/
                     }
                     //----------проверка на выделение бота ------------
                     boolean notEmptyFlag=false;
                     for (Bot i : BotsRepository.getInstance().getBots()) {
                         if (i.clickCheck(cx,cy)) {
                             CodeRepository.getInstance().updateCode(i.getCode());
-                            infoBot = i;
+                            BotsRepository.getInstance().setInfoBot(i);
                             i.setEnergy((short) 100);
                             notEmptyFlag = true;
                         }
                     }
-                    if (!notEmptyFlag) infoBot=null;
+                    BotsRepository te = BotsRepository.getInstance();
+                    if (!notEmptyFlag) te.setInfoBot(null);
 
                     for (Bot i:BotsRepository.getInstance().getBots()) {
                         i.draw(canvas);
                     }
-                    if (infoBot != null) infoBot.drawInfo(canvas);
+                    if (te.getInfoBot() != null) te.getInfoBot().drawInfo(canvas);
 
 
                     /*PictureButton pause = new PictureButton(canvas.getWidth()-100, 0, 100,100,R.drawable.pause,context);

@@ -5,4 +5,6 @@
     <string name="sett_name3">вероятность мутации</string>
     <string name="sett_name4">расход энергии</string>
     <string name="sett_name5">правило Линдемана</string>
+    <string name="Success_save">Код сохранен</string>
+    <string name="Success_load">Код загружен</string>
 </resources>

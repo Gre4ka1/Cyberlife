@@ -81,6 +81,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/loadButton"
             tools:layout_editor_absoluteY="0dp" />
+        <ImageButton
+            android:id="@+id/add"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:background="@null"
+            android:scaleType="centerCrop"
+            android:src="@drawable/add_foreground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/restart"
+            tools:layout_editor_absoluteY="0dp"/>
 
         <ImageButton
             android:id="@+id/settings"
