@@ -16,9 +16,7 @@ public class ClickRepository {
         this.clickX = clickX;
     }
 
-    public Integer getClickY() {
-        return clickY;
-    }
+    public Integer getClickY() {return clickY;}
 
     public void setClickY(Integer clickY) {
         this.clickY = clickY;
