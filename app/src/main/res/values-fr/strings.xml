@@ -7,5 +7,6 @@
     <string name="sett_name5">La règle de Lindemann</string>
     <string name="Success_save">enregistrement réussi</string>
     <string name="Success_load">téléchargement réussi</string>
+    <string name="autoDuplicate">reproduction automatique</string>
 
 </resources>

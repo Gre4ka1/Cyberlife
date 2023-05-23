@@ -8,7 +8,15 @@ public class SettingsRepository {
     private int energyConsumption=6;
     private int mutation=10;
     private int LindemannsRule=75;
+    private boolean autoDublicate=true;
 
+    public boolean isAutoDublicate() {
+        return autoDublicate;
+    }
+
+    public void setAutoDublicate(boolean autoDublicate) {
+        this.autoDublicate = autoDublicate;
+    }
 
     public int getLindemannsRule() {return LindemannsRule;}
     public void setLindemannsRule(int lindemannsRule) {LindemannsRule = lindemannsRule;}

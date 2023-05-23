@@ -115,6 +115,9 @@ public class Bot{
         energy+=SettingsRepository.getInstance().getSunEnergy();
         energy=energy>100?100:energy;
     }
+    /*public Bot autoDublicate(){
+
+    }*/
     public Bot dublicate(){//TODO изменение цвета в связи с изменением кода
         energy-=SettingsRepository.getInstance().getEnergyConsumption()*8;
         short[] newCode= new short[16];
@@ -184,7 +187,25 @@ public class Bot{
     }
 
     public ArrayList<Bot>[] runCode(Canvas canvas,ArrayList<Bot>[] tempL){
-
+        boolean autodublicate= true;
+        if (SettingsRepository.getInstance().isAutoDublicate()) {
+            if (energy >= 90) {
+                boolean f4 = true;
+                for (Bot h : BotsRepository.getInstance().getBots()) {
+                    if (h.getX() == getTarget()[0] && h.getY() == getTarget()[1] || getTarget()[0] < 0 || getTarget()[0] >= canvas.getWidth() || getTarget()[1] < 0 || getTarget()[1] >= canvas.getHeight()) {
+                        f4 = false;
+                        break;
+                    }
+                }
+                if (f4) {
+                    Bot tr = dublicate();
+                    if (tr != null) {
+                        tempL[0].add(tr);
+                        autodublicate = false;
+                    }
+                }
+            }
+        }
         for (short count = 0; count < code.length;) {
             if (code[count] == 13) {   //                      ГЕНЕРАЦИЯ
                 generate();
@@ -197,27 +218,29 @@ public class Bot{
                 break;
             }
             else if (code[count] == 15) {//                         размножение
-                if (energy >= 50) {
-                    boolean f4 = true;
-                    for (Bot h : BotsRepository.getInstance().getBots()) {
-                        if (h.getX() == getTarget()[0] && h.getY() == getTarget()[1] || getTarget()[0] < 0 || getTarget()[0] >= canvas.getWidth() || getTarget()[1] < 0 || getTarget()[1] >= canvas.getHeight()) {
-                            f4 = false;
-                            break;
+                if (autodublicate) {
+                    if (energy >= 50) {
+                        boolean f4 = true;
+                        for (Bot h : BotsRepository.getInstance().getBots()) {
+                            if (h.getX() == getTarget()[0] && h.getY() == getTarget()[1] || getTarget()[0] < 0 || getTarget()[0] >= canvas.getWidth() || getTarget()[1] < 0 || getTarget()[1] >= canvas.getHeight()) {
+                                f4 = false;
+                                break;
+                            }
                         }
-                    }
-                    if (f4) {
-                        //BotsRepository.getInstance().addBot(dublicate());
-                        Bot tr = dublicate();
-                        if (tr!=null){
-                            tempL[0].add(tr);
-                        }
+                        if (f4) {
+                            //BotsRepository.getInstance().addBot(dublicate());
+                            Bot tr = dublicate();
+                            if (tr != null) {
+                                tempL[0].add(tr);
+                            }
 
-                        //k++;
-                        //System.out.println(b.getX() + " " + b.getY());
-                        count++;
-                        break;
+                            //k++;
+                            //System.out.println(b.getX() + " " + b.getY());
+                            count++;
+                            break;
+                        } else count++;
                     } else count++;
-                } else count++;
+                }
             }
             else if (code[count] == 16) {//                      ПОЕДАНИЕ
                 BotsRepository t = BotsRepository.getInstance();

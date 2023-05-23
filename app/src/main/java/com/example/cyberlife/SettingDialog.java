@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ public class SettingDialog extends DialogFragment {
         SeekBar seekBar3 = view.findViewById(R.id.seek_bar3);
         SeekBar seekBar4 = view.findViewById(R.id.seek_bar4);
         SeekBar seekBar5 = view.findViewById(R.id.seek_bar5);
+        CheckBox checkBox1 = view.findViewById(R.id.checkBox1);
 
         SettingsRepository t = SettingsRepository.getInstance();
         seekBar1.setProgress(t.getNumberOfBots());
@@ -28,8 +31,15 @@ public class SettingDialog extends DialogFragment {
         seekBar3.setProgress(t.getMutation());
         seekBar4.setProgress(t.getEnergyConsumption());
         seekBar5.setProgress(t.getLindemannsRule());
+        checkBox1.setChecked(t.isAutoDublicate());
 
         view.setMinimumWidth(500);
+        checkBox1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SettingsRepository.getInstance().setAutoDublicate(isChecked);
+            }
+        });
         seekBar1.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

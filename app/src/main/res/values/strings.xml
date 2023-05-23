@@ -7,5 +7,6 @@
     <string name="sett_name5">Lindemanns rule</string>
     <string name="Success_save">Success saving</string>
     <string name="Success_load">Success loading</string>
+    <string name="autoDuplicate">automatic reproduction</string>
 
 </resources>

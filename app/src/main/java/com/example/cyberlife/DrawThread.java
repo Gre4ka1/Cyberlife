@@ -227,6 +227,7 @@ public class DrawThread extends Thread{
                 //System.out.println(tempbots);
                 ArrayList<Bot>[] tempL = new ArrayList[]{new ArrayList<Bot>(), new ArrayList<Bot>()};
                 for (Bot bot : tempbots) {
+
                     tempL = bot.runCode(canvas,tempL);
                     //System.out.println(bot);
                 }
